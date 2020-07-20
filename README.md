@@ -39,3 +39,17 @@ pmon reload [进程名称或进程ID]
 ```bash
 pmon delete [进程名称或ID]
 ```
+
+### 6. 日志操作
+
+查看所有进程日志流
+
+```bash
+pmon log
+```
+
+查看单个进程日志流
+
+```bash
+pmon log [进程名称 or 进程id]
+```
