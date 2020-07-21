@@ -1,21 +1,58 @@
 package cmd
 
 import (
+	"bytes"
 	"fmt"
+	"github.com/ntt360/pmon2/app/god"
 	"log"
+	"net"
 	"os"
+	"strings"
+	"time"
 )
 
 func Start(args []string) {
-	// 获取进程文件
-	processFile := args[0]
-	file, err := os.Stat(processFile)
-	if os.IsNotExist(err) || file.IsDir() {
-		// TODO 进程文件不存在
-		log.Fatal(fmt.Sprintf("%s not exist", processFile))
-		return
+	prjDir := os.Getenv("HOME") + "/.pmon"
+	sockFile := prjDir + "/run/pmon.sock"
+	_, err := os.Stat(sockFile)
+	if os.IsNotExist(err) {
+		log.Fatal(err)
 	}
 
-	//syscall.ForkExec()
-	fmt.Println(args)
+	conn, err := net.Dial("unix", sockFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// timeout 5 seconds
+	conn.SetDeadline(time.Now().Add(time.Second * 5))
+	defer conn.Close()
+
+	p := god.Package{
+		Cmd:  god.CmdStart,
+		Args: args,
+	}
+
+	msg := p.MustToJson()
+	pos, err := conn.Write(msg)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("本次发送数据：%s, length: %d\n", msg, pos)
+
+	var rspData strings.Builder
+	for {
+		buffer := make([]byte, 4096)
+		pos, err := conn.Read(buffer)
+		if err != nil {
+			break
+		}
+		rspData.Write(buffer[0:pos])
+		if bytes.Contains(buffer, []byte(god.EOF)) { // data end
+			break
+		}
+	}
+
+	// TODO
+	fmt.Println(rspData.String())
 }
