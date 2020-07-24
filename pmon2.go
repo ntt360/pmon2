@@ -2,7 +2,8 @@ package main
 
 import (
 	"flag"
-	"github.com/ntt360/pmon2/cmd"
+	"github.com/ntt360/pmon2/client"
+	"github.com/ntt360/pmon2/client/tasks/start"
 )
 
 func main() {
@@ -12,13 +13,12 @@ func main() {
 	if argsLen == 0 {
 		// TODO print
 	}
-
 	switch args[0] {
 	case "start":
-		cmd.Start(args[1:])
+		start.Start(args[1:])
 		break
 	case "list":
-		cmd.List(args[1:])
+		client.List(args[1:])
 		break
 	}
 

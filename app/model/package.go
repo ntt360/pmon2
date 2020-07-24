@@ -1,4 +1,4 @@
-package god
+package model
 
 import "encoding/json"
 
@@ -6,8 +6,8 @@ import "encoding/json"
 const EOF = "\r\n\r\n"
 
 type Package struct {
-	Cmd  string   `json:"cmd"`
-	Args []string `json:"args"`
+	Cmd  string `json:"cmd"`
+	Data string `json:"data"`
 }
 
 func (p *Package) MustToJson() []byte {

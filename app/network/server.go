@@ -3,9 +3,9 @@ package network
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
-	"github.com/ntt360/pmon2/app/god"
-	"log"
+	"github.com/ntt360/pmon2/app"
+	"github.com/ntt360/pmon2/app/actions"
+	"github.com/ntt360/pmon2/app/model"
 	"net"
 	"strings"
 )
@@ -23,43 +23,42 @@ func HandlerConn(conn net.Conn) {
 
 		readData := buffer[0:pos]
 		data.Write(readData)
-		if bytes.Contains(buffer, []byte(god.EOF)) {
+		if bytes.Contains(buffer, []byte(model.EOF)) {
 			break
 		}
 	}
 
-	var p god.Package
-	dataStr := strings.TrimRight(data.String(), god.EOF)
+	var p model.Package
+	dataStr := strings.TrimRight(data.String(), model.EOF)
 	err := json.Unmarshal([]byte(dataStr), &p)
 	if err != nil {
-		errMsg := fmt.Sprintf("write error %v", err)
-		_, err := conn.Write([]byte(errMsg + god.EOF))
-		if err != nil {
-			log.Printf(errMsg)
+		app.Log.Debug(err)
+		errRsp := model.Rsp{
+			Code: 1,
+			Msg:  err.Error(),
 		}
+		_, _ = conn.Write(errRsp.ToJson(model.EOF))
+		return
 	}
 
-	stdout, err := runModule(p)
+	rsp, err := runModule(p)
 	if err != nil {
-		_, err := conn.Write([]byte(err.Error() + god.EOF))
-		if err != nil {
-			log.Printf(err.Error())
+		errRsp := model.Rsp{
+			Code: 1,
+			Msg:  err.Error(),
 		}
+		_, _ = conn.Write(errRsp.ToJson(model.EOF))
+		return
 	}
 
-	stdout = append(stdout, []byte(god.EOF)...)
-	_, err = conn.Write(stdout)
-	if err != nil {
-		log.Printf(err.Error())
-	}
+	_, _ = conn.Write(rsp)
 }
 
-func runModule(p god.Package) ([]byte, error) {
+func runModule(p model.Package) ([]byte, error) {
 	switch p.Cmd {
-	case god.CmdStart:
-		cmd := &god.StartCmd{}
-		return cmd.Run()
-	case god.CmdStop:
+	case model.CmdStart:
+		return actions.NewStart(p).Rsp(model.EOF)
+	case model.CmdStop:
 		break
 	}
 
