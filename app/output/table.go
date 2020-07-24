@@ -5,14 +5,13 @@ import (
 	"os"
 )
 
-func Table(tbData []string)  {
-	var allData = [][]string{tbData}
+func Table(tbData [][]string)  {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Id", "Name", "Pid", "Status", "Date"})
 	hColor := tablewriter.Colors{tablewriter.Bold, tablewriter.FgHiCyanColor}
 	table.SetHeaderColor(hColor, hColor, hColor, hColor, hColor)
 
-	for _, row := range allData {
+	for _, row := range tbData {
 		switch row[3] {
 		case "running":
 			table.Rich(row, []tablewriter.Colors{{tablewriter.FgHiYellowColor}, {tablewriter.FgHiWhiteColor}, {tablewriter.FgHiWhiteColor}, {tablewriter.Bold, tablewriter.FgHiGreenColor}, {tablewriter.FgWhiteColor}})
