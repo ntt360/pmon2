@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-func Start(args []string) {
+func Run(args []string) {
 	prjDir := os.Getenv("HOME") + "/.pmon"
 	sockFile := prjDir + "/run/pmon.sock"
 	_, err := os.Stat(sockFile)
@@ -34,5 +34,5 @@ func Start(args []string) {
 		app.Log.Fatal(err)
 	}
 
-	output.Table(rel)
+	output.Table([][]string{rel})
 }
