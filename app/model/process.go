@@ -26,6 +26,9 @@ type Process struct {
 	Args        string      `json:"args"`
 	Status      string      `json:"status"`
 	Pointer     *os.Process `gorm:"-" json:"-"`
+	Uid         string
+	Username    string
+	Gid         string
 }
 
 func (Process) TableName() string {

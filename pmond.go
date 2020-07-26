@@ -1,36 +1,22 @@
 package main
 
 import (
+	"flag"
 	"github.com/ntt360/pmon2/app"
 	"github.com/ntt360/pmon2/app/god"
-	"github.com/ntt360/pmon2/app/network"
+	"github.com/ntt360/pmon2/app/server"
 	"net"
-	"os"
 )
 
 func main() {
-	prjDir := os.Getenv("HOME") + "/.pmon/run/"
-	_, err := os.Stat(prjDir)
-	if os.IsNotExist(err) {
-		err = os.MkdirAll(prjDir, 0755)
-		if err != nil {
-			app.Log.Fatal(err)
-		}
-	}
+	confDir := flag.String("conf", "/etc/pmon2/config/config.yaml", "pmon2 boot config file path")
+	flag.Parse()
+	app.Instance(*confDir)
 
+	// start monitor process file
 	god.NewMonitor()
 
-	unixSocketFile := prjDir + "pmon.sock"
-	_, err = os.Stat(unixSocketFile)
-	if !os.IsNotExist(err) {
-		app.Log.WithField("unix_sock", unixSocketFile).Debug("unix socket file already exist, del it")
-		err = os.Remove(unixSocketFile)
-		if err != nil {
-			app.Log.Fatal(err)
-		}
-	}
-
-	l, err := net.Listen("unix", unixSocketFile)
+	l, err := net.Listen("unix", app.Config.GetSockFile())
 	if err != nil {
 		app.Log.Fatal(err)
 	}
@@ -43,6 +29,6 @@ func main() {
 		}
 
 		// handler the data
-		go network.HandlerConn(conn)
+		go server.HandlerConn(conn)
 	}
 }

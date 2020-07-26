@@ -19,8 +19,14 @@ func Start(args []string) (string, error) {
 	}
 	a := utils.ParseArgs(args)
 
+	// get run process user
+	runUser, err := GetProcUser(a)
+	if err != nil {
+		return "", nil
+	}
+
 	// start process
-	process, err := executor.Exec(processFile, a.Get("log"), a.Get("name"), a.Get("def_params"))
+	process, err := executor.Exec(processFile, a.Get("log"), a.Get("name"), a.Get("def_params"), runUser)
 	if err != nil {
 		return "", err
 	}

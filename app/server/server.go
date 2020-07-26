@@ -1,11 +1,11 @@
-package network
+package server
 
 import (
 	"bytes"
 	"encoding/json"
 	"github.com/ntt360/pmon2/app"
-	"github.com/ntt360/pmon2/app/actions"
 	"github.com/ntt360/pmon2/app/model"
+	"github.com/ntt360/pmon2/app/server/actions"
 	"net"
 	"strings"
 )

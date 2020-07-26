@@ -3,7 +3,7 @@ package actions
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/ntt360/pmon2/app"
+	"github.com/ntt360/pmon2/app/boot"
 	"github.com/ntt360/pmon2/app/god"
 	"github.com/ntt360/pmon2/app/model"
 	"strconv"
@@ -25,12 +25,12 @@ func (s *Start) Rsp(suffix string) ([]byte, error) {
 
 	// save to db
 	var originOne model.Process
-	err := app.Db().First(&originOne, "process_file = ?", m.ProcessFile).Error
-	if err == nil && originOne.ID > 0{ // process already exist
+	err := boot.Db().First(&originOne, "process_file = ?", m.ProcessFile).Error
+	if err == nil && originOne.ID > 0 { // process already exist
 		m.ID = originOne.ID
 	}
 
-	err = app.Db().Save(&m).Error
+	err = boot.Db().Save(&m).Error
 	if err != nil {
 		return nil, fmt.Errorf("pmon2 run err: %v", err)
 	}
@@ -46,6 +46,7 @@ func renderOutput(m *model.Process) model.Rsp {
 		strconv.Itoa(int(m.ID)),
 		m.Name,
 		strconv.Itoa(m.Pid),
+		m.Username,
 		m.Status,
 		m.CreatedAt.Format("2006-01-02 15:04:05"),
 	}
