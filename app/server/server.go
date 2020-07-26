@@ -10,6 +10,37 @@ import (
 	"strings"
 )
 
+// socket serve
+type SServer struct {
+	sock string
+}
+
+func New(sockFile string) *SServer {
+	s := &SServer{
+		sock: sockFile,
+	}
+
+	return s
+}
+
+func (s *SServer) Run()  {
+	l, err := net.Listen("unix", s.sock)
+	if err != nil {
+		app.Log.Fatal(err)
+	}
+	defer l.Close()
+
+	for {
+		conn, err := l.Accept()
+		if err != nil {
+			app.Log.Fatal(err)
+		}
+
+		// handler the data
+		go HandlerConn(conn)
+	}
+}
+
 func HandlerConn(conn net.Conn) {
 	var data strings.Builder
 	defer conn.Close()
