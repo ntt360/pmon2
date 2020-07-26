@@ -35,7 +35,13 @@ func Restart(args []string) (string, error) {
 		m.Args = extArgs
 	}
 
-	process, err := executor.Exec(m.ProcessFile, m.Log, m.Name, m.Args)
+	// get run process user
+	runUser, err := GetProcUser(newArgs)
+	if err != nil {
+		return "", nil
+	}
+
+	process, err := executor.Exec(m.ProcessFile, m.Log, m.Name, m.Args, runUser)
 	if err != nil {
 		return "", err
 	}

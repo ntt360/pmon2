@@ -3,7 +3,7 @@ package start
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/ntt360/pmon2/app"
+	"github.com/ntt360/pmon2/app/boot"
 	"github.com/ntt360/pmon2/app/model"
 	"github.com/ntt360/pmon2/client/proxy"
 	"os"
@@ -27,7 +27,7 @@ func loadFirst(execPath, prjDir string, args []string) ([]string, error) {
 // check the process already have
 func processExist(execPath string) (*model.Process, bool) {
 	var process model.Process
-	err := app.Db().First(&process, "process_file = ?", execPath).Error
+	err := boot.Db().First(&process, "process_file = ?", execPath).Error
 	if err != nil {
 		return nil, false
 	}

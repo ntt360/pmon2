@@ -1,4 +1,4 @@
-package app
+package boot
 
 import (
 	"github.com/ntt360/pmon2/app/model"

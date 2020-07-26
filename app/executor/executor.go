@@ -1,15 +1,17 @@
 package executor
 
 import (
-	"github.com/ntt360/pmon2/app/crypto"
 	"github.com/ntt360/pmon2/app/model"
+	"github.com/ntt360/pmon2/app/utils/crypto"
 	"os"
+	"os/user"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"syscall"
 )
 
-func Exec(processFile, customLogFile, name, extArgs string) (*model.Process, error) {
+func Exec(processFile, customLogFile, name, extArgs string, user *user.User) (*model.Process, error) {
 	logPath, err := getLogPath(customLogFile, crypto.Crc32Hash(processFile))
 	if err != nil {
 		return nil, err
@@ -19,9 +21,19 @@ func Exec(processFile, customLogFile, name, extArgs string) (*model.Process, err
 		return nil, err
 	}
 
+	uid, _ := strconv.Atoi(user.Uid)
+	gid, _ := strconv.Atoi(user.Gid)
+
 	attr := &os.ProcAttr{
 		Env:   os.Environ(),
 		Files: []*os.File{nil, logOutput, logOutput},
+		Sys: &syscall.SysProcAttr{
+			Credential: &syscall.Credential{
+				Uid: uint32(uid),
+				Gid: uint32(gid),
+			},
+			Setsid: true,
+		},
 	}
 
 	var processParams = []string{processFile}
@@ -47,6 +59,9 @@ func Exec(processFile, customLogFile, name, extArgs string) (*model.Process, err
 		Args:        strings.Join(processParams[1:], " "),
 		Pointer:     process,
 		Status:      model.StatusInit,
+		Uid:         user.Uid,
+		Gid:         user.Gid,
+		Username:    user.Username,
 	}
 
 	return &pModel, nil
