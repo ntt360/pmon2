@@ -2,15 +2,12 @@ package start
 
 import (
 	"github.com/ntt360/pmon2/app"
-	"github.com/ntt360/pmon2/app/output"
 	"log"
 	"os"
 )
 
 func Run(args []string) {
-	prjDir := os.Getenv("HOME") + "/.pmon"
-	sockFile := prjDir + "/run/pmon.sock"
-	_, err := os.Stat(sockFile)
+	_, err := os.Stat(app.Config.Sock)
 	if os.IsNotExist(err) {
 		log.Fatal(err)
 	}
@@ -25,14 +22,16 @@ func Run(args []string) {
 	m, exist := processExist(execPath)
 	var rel []string
 	if exist {
-		rel, err = restart(m, prjDir, args)
+		rel, err = restart(m, args)
 	} else {
-		rel, err = loadFirst(execPath, prjDir, args)
+		rel, err = loadFirst(execPath, args)
 	}
 
 	if err != nil {
 		app.Log.Fatal(err)
 	}
 
-	output.Table([][]string{rel})
+	log.Println(rel)
+
+	//output.Table([][]string{rel})
 }

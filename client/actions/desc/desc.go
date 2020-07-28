@@ -3,7 +3,6 @@ package desc
 import (
 	"github.com/jinzhu/gorm"
 	"github.com/ntt360/pmon2/app"
-	"github.com/ntt360/pmon2/app/boot"
 	"github.com/ntt360/pmon2/app/model"
 	"github.com/ntt360/pmon2/app/output"
 	"strconv"
@@ -13,7 +12,7 @@ func Run(args []string) {
 	val := args[0]
 
 	var process model.Process
-	err := boot.Db().Find(&process, "name = ? or id = ?", val, val).Error
+	err := app.Db().Find(&process, "name = ? or id = ?", val, val).Error
 	if err != nil {
 		if err != gorm.ErrRecordNotFound {
 			app.Log.Fatal("pmon2 run err: %v", err)

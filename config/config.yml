@@ -3,7 +3,7 @@
 # --------------------------------
 
 # data dir, such as db data
-data: "/etc/pmon2/data"
+data: "/home/liangqi1/devspace/pmon2/data"
 
 # logs dir
 logs: "/var/log/pmon2/log"
@@ -11,5 +11,7 @@ logs: "/var/log/pmon2/log"
 # socket file
 sock: "/var/run/pmon2/pmon2.sock"
 
+# app exec dir
+bin: "/home/liangqi1/devspace/pmon2/bin"
 
 

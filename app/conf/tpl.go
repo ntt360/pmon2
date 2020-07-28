@@ -10,6 +10,8 @@ type Tpl struct {
 	Data   string `yaml:"data"`
 	Logs   string `yaml:"logs"`
 	Sock   string `yaml:"sock"`
+	Bin    string `yaml:"bin"`
+	Conf   string
 }
 
 func (c *Tpl) GetSockFile() string {

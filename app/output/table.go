@@ -37,23 +37,23 @@ func DescTable(tbData [][]string) {
 
 func Table(tbData [][]string) {
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Id", "Name", "Pid", "Status", "Date"})
+	table.SetHeader([]string{"Id", "Name", "Pid", "Status", "User", "Date"})
 	hColor := tablewriter.Colors{tablewriter.Bold, tablewriter.FgHiCyanColor}
-	table.SetHeaderColor(hColor, hColor, hColor, hColor, hColor)
+	table.SetHeaderColor(hColor, hColor, hColor, hColor, hColor, hColor)
 
 	for _, row := range tbData {
 		switch row[3] {
 		case "running":
-			table.Rich(row, []tablewriter.Colors{{tablewriter.FgHiYellowColor}, {tablewriter.FgHiWhiteColor}, {tablewriter.FgHiWhiteColor}, {tablewriter.Bold, tablewriter.FgHiGreenColor}, {tablewriter.FgWhiteColor}})
+			table.Rich(row, []tablewriter.Colors{{tablewriter.FgHiYellowColor}, {tablewriter.FgHiWhiteColor}, {tablewriter.FgHiWhiteColor}, {tablewriter.Bold, tablewriter.FgHiGreenColor}, {}, {tablewriter.FgWhiteColor}})
 		case "stopped":
-			table.Rich(row, []tablewriter.Colors{{tablewriter.FgHiYellowColor}, {tablewriter.FgHiWhiteColor}, {tablewriter.FgHiWhiteColor}, {tablewriter.Bold, tablewriter.FgYellowColor}, {tablewriter.FgWhiteColor}})
+			table.Rich(row, []tablewriter.Colors{{tablewriter.FgHiYellowColor}, {tablewriter.FgHiWhiteColor}, {tablewriter.FgHiWhiteColor}, {tablewriter.Bold, tablewriter.FgYellowColor}, {}, {tablewriter.FgWhiteColor}})
 		case "failed":
-			table.Rich(row, []tablewriter.Colors{{tablewriter.FgHiYellowColor}, {tablewriter.FgHiWhiteColor}, {tablewriter.FgHiWhiteColor}, {tablewriter.Bold, tablewriter.FgRedColor}, {tablewriter.FgWhiteColor}})
+			table.Rich(row, []tablewriter.Colors{{tablewriter.FgHiYellowColor}, {tablewriter.FgHiWhiteColor}, {tablewriter.FgHiWhiteColor}, {tablewriter.Bold, tablewriter.FgRedColor}, {}, {tablewriter.FgWhiteColor}})
 		case "init":
-			table.Rich(row, []tablewriter.Colors{{tablewriter.FgHiYellowColor}, {tablewriter.FgHiWhiteColor}, {tablewriter.FgHiWhiteColor}, {tablewriter.Bold}, {tablewriter.FgWhiteColor}})
+			table.Rich(row, []tablewriter.Colors{{tablewriter.FgHiYellowColor}, {tablewriter.FgHiWhiteColor}, {tablewriter.FgHiWhiteColor}, {tablewriter.Bold}, {}, {tablewriter.FgWhiteColor}})
 		}
 	}
 
-	table.SetColumnAlignment([]int{tablewriter.ALIGN_CENTER, tablewriter.ALIGN_CENTER, tablewriter.ALIGN_CENTER, tablewriter.ALIGN_CENTER, tablewriter.ALIGN_CENTER})
+	table.SetColumnAlignment([]int{tablewriter.ALIGN_CENTER, tablewriter.ALIGN_CENTER, tablewriter.ALIGN_CENTER, tablewriter.ALIGN_CENTER, tablewriter.ALIGN_CENTER, tablewriter.ALIGN_CENTER})
 	table.Render()
 }

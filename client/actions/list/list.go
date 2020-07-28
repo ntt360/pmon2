@@ -2,7 +2,6 @@ package list
 
 import (
 	"github.com/ntt360/pmon2/app"
-	"github.com/ntt360/pmon2/app/boot"
 	"github.com/ntt360/pmon2/app/model"
 	"github.com/ntt360/pmon2/app/output"
 )
@@ -10,7 +9,7 @@ import (
 // show all process list
 func Run(ars []string) {
 	var all []model.Process
-	err := boot.Db().Find(&all).Error
+	err := app.Db().Find(&all).Error
 	if err != nil {
 		app.Log.Fatalf("pmon2 run err: %v", err)
 	}

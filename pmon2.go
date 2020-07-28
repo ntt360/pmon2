@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/ntt360/pmon2/app"
 	"github.com/ntt360/pmon2/client/actions/desc"
 	"github.com/ntt360/pmon2/client/actions/list"
 	"github.com/ntt360/pmon2/client/actions/start"
@@ -10,6 +11,8 @@ import (
 
 func main() {
 	flag.Parse()
+	app.Instance("/etc/pmon2/config/config.yml")
+
 	args := flag.Args()
 	argsLen := len(args)
 	if argsLen == 0 {

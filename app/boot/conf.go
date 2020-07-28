@@ -18,5 +18,7 @@ func Conf(confFile string) (*conf.Tpl, error) {
 		return nil, err
 	}
 
+	c.Conf = confFile
+	
 	return &c,nil
 }

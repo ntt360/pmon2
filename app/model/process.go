@@ -47,6 +47,7 @@ func (p Process) RenderTable() []string {
 		p.Name,
 		strconv.Itoa(p.Pid),
 		p.Status,
+		p.Username,
 		p.CreatedAt.Format("2006-01-02 15:04:05"),
 	}
 }

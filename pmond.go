@@ -8,9 +8,8 @@ import (
 )
 
 func main() {
-	confDir := flag.String("conf", "/etc/pmon2/config/config.yaml", "pmon2 boot config file path")
 	flag.Parse()
-	app.Instance(*confDir)
+	app.Instance("/etc/pmon2/config/config.yml")
 
 	// start monitor process file
 	god.NewMonitor()
