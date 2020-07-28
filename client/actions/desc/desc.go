@@ -28,11 +28,12 @@ func Run(args []string) {
 		{"id", strconv.Itoa(int(process.ID))},
 		{"name", process.Name},
 		{"pid", strconv.Itoa(process.Pid)},
-		{"processFile", process.ProcessFile},
+		{"process", process.ProcessFile},
+		{"user", process.Username},
 		{"args", process.Args},
 		{"log", process.Log},
-		{"createdAt", process.CreatedAt.Format("2006-01-02 15:04:05")},
-		{"updatedAt", process.UpdatedAt.Format("2006-01-02 15:04:05")},
+		{"created_at", process.CreatedAt.Format("2006-01-02 15:04:05")},
+		{"updated_at", process.UpdatedAt.Format("2006-01-02 15:04:05")},
 	}
 
 	output.DescTable(rel)
