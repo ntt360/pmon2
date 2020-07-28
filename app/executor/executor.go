@@ -1,6 +1,7 @@
 package executor
 
 import (
+	"fmt"
 	"github.com/ntt360/pmon2/app/model"
 	"github.com/ntt360/pmon2/app/utils/crypto"
 	"os"
@@ -24,6 +25,7 @@ func Exec(processFile, customLogFile, name, extArgs string, user *user.User) (*m
 	uid, _ := strconv.Atoi(user.Uid)
 	gid, _ := strconv.Atoi(user.Gid)
 
+	fmt.Println(uid, gid, processFile)
 	attr := &os.ProcAttr{
 		Env:   os.Environ(),
 		Files: []*os.File{nil, logOutput, logOutput},

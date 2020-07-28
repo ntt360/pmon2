@@ -2,6 +2,7 @@ package sock
 
 import (
 	"bytes"
+	"github.com/ntt360/pmon2/app"
 	"github.com/ntt360/pmon2/app/model"
 	"net"
 	"os"
@@ -10,7 +11,7 @@ import (
 )
 
 func GetConn() (net.Conn, error){
-	sockFile := os.Getenv("HOME") + "/.pmon/run/pmon.sock"
+	sockFile := app.Config.Sock
 	_, err := os.Stat(sockFile)
 	if os.IsNotExist(err) {
 		return nil, err
@@ -22,7 +23,7 @@ func GetConn() (net.Conn, error){
 	}
 
 	// timeout 5 seconds
-	conn.SetDeadline(time.Now().Add(time.Second * 5))
+	_ = conn.SetDeadline(time.Now().Add(time.Second * 5))
 
 	return conn, nil
 }

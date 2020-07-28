@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/ntt360/pmon2/app"
 	"github.com/ntt360/pmon2/app/utils/array"
 	"github.com/ntt360/pmon2/client/worker"
 	"os"
@@ -14,6 +15,8 @@ func main() {
 		_, _ = os.Stderr.WriteString("process params not valid")
 		os.Exit(2)
 	}
+
+	app.Instance(os.Getenv("PMON2_CONF"))
 
 	// check run type param
 	typeCli := args[0]
