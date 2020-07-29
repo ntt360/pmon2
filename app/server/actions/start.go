@@ -46,8 +46,8 @@ func renderOutput(m *model.Process) model.Rsp {
 		strconv.Itoa(int(m.ID)),
 		m.Name,
 		strconv.Itoa(m.Pid),
-		m.Username,
 		m.Status,
+		m.Username,
 		m.CreatedAt.Format("2006-01-02 15:04:05"),
 	}
 

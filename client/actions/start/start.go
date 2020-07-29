@@ -2,6 +2,7 @@ package start
 
 import (
 	"github.com/ntt360/pmon2/app"
+	"github.com/ntt360/pmon2/app/output"
 	"log"
 	"os"
 )
@@ -31,7 +32,5 @@ func Run(args []string) {
 		app.Log.Fatal(err)
 	}
 
-	log.Println(rel)
-
-	//output.Table([][]string{rel})
+	output.Table([][]string{rel})
 }

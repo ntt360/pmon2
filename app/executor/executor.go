@@ -1,7 +1,6 @@
 package executor
 
 import (
-	"fmt"
 	"github.com/ntt360/pmon2/app/model"
 	"github.com/ntt360/pmon2/app/utils/crypto"
 	"os"
@@ -25,7 +24,6 @@ func Exec(processFile, customLogFile, name, extArgs string, user *user.User) (*m
 	uid, _ := strconv.Atoi(user.Uid)
 	gid, _ := strconv.Atoi(user.Gid)
 
-	fmt.Println(uid, gid, processFile)
 	attr := &os.ProcAttr{
 		Env:   os.Environ(),
 		Files: []*os.File{nil, logOutput, logOutput},
@@ -67,31 +65,4 @@ func Exec(processFile, customLogFile, name, extArgs string, user *user.User) (*m
 	}
 
 	return &pModel, nil
-}
-
-func getLogPath(customLogFile string, hash string) (string, error) {
-	prjDir := os.Getenv("HOME") + "/.pmon"
-	if len(customLogFile) <= 0 {
-		defLogDir := prjDir + "/logs/"
-		_, err := os.Stat(defLogDir)
-		if os.IsNotExist(err) {
-			err := os.MkdirAll(defLogDir, 0755)
-			if err != nil {
-				return "", err
-			}
-		}
-		customLogFile = defLogDir + hash
-	}
-
-	return customLogFile, nil
-}
-
-func getLogFile(customLogFile string) (*os.File, error) {
-	// 创建进程日志文件
-	logFile, err := os.OpenFile(customLogFile, syscall.O_CREAT|syscall.O_APPEND|syscall.O_WRONLY, 0755)
-	if err != nil {
-		return nil, err
-	}
-
-	return logFile, nil
 }

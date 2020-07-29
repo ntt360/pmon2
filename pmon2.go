@@ -6,6 +6,7 @@ import (
 	"github.com/ntt360/pmon2/client/actions/desc"
 	"github.com/ntt360/pmon2/client/actions/list"
 	"github.com/ntt360/pmon2/client/actions/start"
+	"github.com/ntt360/pmon2/client/actions/stop"
 	"os"
 )
 
@@ -19,15 +20,22 @@ func main() {
 		// TODO print help
 		os.Exit(0)
 	}
-	switch args[0] {
+
+	firstParam := args[0]
+	leftParams := args[1:]
+
+	switch firstParam {
 	case "start":
-		start.Run(args[1:])
+		start.Run(leftParams)
 		break
 	case "list", "ls":
-		list.Run(args[1:])
+		list.Run(leftParams)
 		break
 	case "desc": // show process detail info
-		desc.Run(args[1:])
+		desc.Run(leftParams)
+		break
+	case "stop":
+		stop.Run(leftParams)
 	default:
 		// TODO show print help
 	}
