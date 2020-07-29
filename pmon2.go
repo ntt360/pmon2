@@ -5,6 +5,8 @@ import (
 	"github.com/ntt360/pmon2/app"
 	"github.com/ntt360/pmon2/client/actions/del"
 	"github.com/ntt360/pmon2/client/actions/desc"
+	"github.com/ntt360/pmon2/client/actions/help"
+	"github.com/ntt360/pmon2/client/actions/kill"
 	"github.com/ntt360/pmon2/client/actions/list"
 	"github.com/ntt360/pmon2/client/actions/start"
 	"github.com/ntt360/pmon2/client/actions/stop"
@@ -41,8 +43,11 @@ func main() {
 	case "del", "delete":
 		del.Run(leftParams)
 		break
+	case "kill":
+		kill.Run(leftParams)
+		break
 	default:
-		// TODO show print help
+		help.Run(leftParams)
 	}
 
 }
