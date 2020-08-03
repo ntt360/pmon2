@@ -63,7 +63,6 @@ func HandlerConn(conn net.Conn) {
 	dataStr := strings.TrimRight(data.String(), model.EOF)
 	err := json.Unmarshal([]byte(dataStr), &p)
 	if err != nil {
-		app.Log.Debug(err)
 		errRsp := model.Rsp{
 			Code: 1,
 			Msg:  err.Error(),
