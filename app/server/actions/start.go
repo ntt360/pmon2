@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/ntt360/pmon2/app"
-	"github.com/ntt360/pmon2/app/god"
 	"github.com/ntt360/pmon2/app/model"
 	"strconv"
 )
@@ -34,9 +33,6 @@ func (s *Start) Rsp(suffix string) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("pmon2 run err: %v", err)
 	}
-
-	// push to process watch
-	god.MonQueue <- &m
 
 	return renderOutput(&m).ToJson(suffix), nil
 }
