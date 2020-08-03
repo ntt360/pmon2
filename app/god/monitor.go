@@ -11,14 +11,10 @@ import (
 	"time"
 )
 
-var MonQueue chan *model.Process
-
 type Monitor struct {
 }
 
 func NewMonitor() {
-	MonQueue = make(chan *model.Process)
-
 	go runMonitor()
 }
 
