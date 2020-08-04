@@ -11,6 +11,7 @@ const (
 	StatusInit    = "init"    // init process
 	StatusRunning = "running" // success running
 	StatusStopped = "stopped" // success finished or run stop success
+	StatusReload  = "reload"  //
 	StatusFailed  = "failed"  // run error
 )
 
@@ -48,6 +49,6 @@ func (p Process) RenderTable() []string {
 		strconv.Itoa(p.Pid),
 		p.Status,
 		p.Username,
-		p.CreatedAt.Format("2006-01-02 15:04:05"),
+		p.UpdatedAt.Format("2006-01-02 15:04:05"),
 	}
 }

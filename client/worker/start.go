@@ -31,6 +31,7 @@ func Start(args []string) (string, error) {
 		return "", err
 	}
 	process.CreatedAt = time.Now()
+	process.UpdatedAt = time.Now()
 
 	// waiting process state
 	var stat = service.NewProcStat(process).Wait()
