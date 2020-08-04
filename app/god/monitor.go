@@ -37,7 +37,7 @@ func runningTask()  {
 	}
 
 	for _, process := range all {
-		if process.Status == model.StatusStopped || process.Status == model.StatusInit{
+		if process.Status == model.StatusStopped || process.Status == model.StatusReload || process.Status == model.StatusInit{
 			// state no need restart
 			continue
 		}

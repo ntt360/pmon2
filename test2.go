@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/ntt360/gracehttp"
 	"log"
 )
 
@@ -14,7 +13,8 @@ func main() {
 	flag.Parse()
 	fmt.Println(flag.Args())
 
-	err := gracehttp.ListenAndServe("0.0.0.0:9456", gin.Default())
+	r := gin.Default()
+	err := r.Run("0.0.0.0:9457")
 	if err != nil {
 		log.Fatal(err)
 	}
