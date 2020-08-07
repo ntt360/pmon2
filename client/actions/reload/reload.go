@@ -1,6 +1,7 @@
 package reload
 
 import (
+	"context"
 	"fmt"
 	"github.com/goinbox/shell"
 	"github.com/ntt360/pmon2/app"
@@ -26,6 +27,7 @@ func Run(args []string) {
 	}
 
 	// update db state
+	var oldState = process.Status
 	process.Status = model.StatusReload
 	if app.Db().Save(&process).Error != nil {
 		app.Log.Fatal(err)
@@ -43,8 +45,9 @@ func Run(args []string) {
 
 	// try to get process new pid
 	pidChannel := make(chan int, 1)
-
-	go func() {
+	ctx, ctxCancel := context.WithTimeout(context.Background(), time.Second * 5)
+	defer ctxCancel()
+	go func(ctx context.Context) {
 		timer := time.NewTicker(time.Millisecond * 300)
 		defer timer.Stop()
 		for {
@@ -59,15 +62,25 @@ func Run(args []string) {
 						return
 					}
 				}
+			case <-ctx.Done():
+				pidChannel <- -1
 			}
 		}
-	}()
+	}(ctx)
 
-	process.Pid = <-pidChannel
-	process.Status = model.StatusRunning
-	if err = app.Db().Save(&process).Error; err != nil {
-		app.Log.Fatal(err)
+	newPid := <-pidChannel
+	if newPid > 0 { // 进程重启成功
+		process.Status = model.StatusRunning
+		if err = app.Db().Save(&process).Error; err != nil {
+			app.Log.Fatal(err)
+		}
+		output.Table([][]string{process.RenderTable()})
+	} else {
+		process.Status = oldState
+		if err = app.Db().Save(&process).Error; err != nil {
+			app.Log.Fatal(err)
+		}
+
+		app.Log.Fatal(fmt.Printf("process %s reload failed", processVal))
 	}
-
-	output.Table([][]string{process.RenderTable()})
 }
