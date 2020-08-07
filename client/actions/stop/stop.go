@@ -70,5 +70,5 @@ func Run(args []string) {
 		app.Log.Fatalf("stop the process %s failed", val)
 	}
 
-	output.Table([][]string{process.RenderTable()})
+	output.TableOne(process.RenderTable())
 }

@@ -74,7 +74,7 @@ func Run(args []string) {
 		if err = app.Db().Save(&process).Error; err != nil {
 			app.Log.Fatal(err)
 		}
-		output.Table([][]string{process.RenderTable()})
+		output.TableOne(process.RenderTable())
 	} else {
 		process.Status = oldState
 		if err = app.Db().Save(&process).Error; err != nil {

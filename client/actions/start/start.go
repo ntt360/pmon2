@@ -1,36 +1,38 @@
 package start
 
 import (
+	"fmt"
 	"github.com/ntt360/pmon2/app"
+	"github.com/ntt360/pmon2/app/model"
 	"github.com/ntt360/pmon2/app/output"
-	"log"
-	"os"
+	"github.com/ntt360/pmon2/app/svc/process"
 )
 
 func Run(args []string) {
-	_, err := os.Stat(app.Config.Sock)
-	if os.IsNotExist(err) {
-		log.Fatal(err)
+	if len(args) == 0 {
+		app.Log.Fatal("please input start process id or name")
 	}
 
-	// get exec abs file path
-	execPath, err := getExecFile(args)
-	if err != nil {
-		app.Log.Error(err.Error())
+	val := args[0]
+	var m model.Process
+	if err := app.Db().Debug().First(&m, "id = ? or name = ?", val, val).Error; err != nil {
+		app.Log.Fatal(fmt.Sprintf("the process %s not exist", val))
+	}
+
+	// checkout process state
+	if process.IsRunning(m.Pid) {
+		if m.Status != model.StatusRunning {
+			m.Status = model.StatusRunning
+			app.Db().Save(&m)
+		}
+		output.TableOne(m.RenderTable())
 		return
 	}
 
-	m, exist := processExist(execPath)
-	var rel []string
-	if exist {
-		rel, err = restart(m, args)
-	} else {
-		rel, err = loadFirst(execPath, args)
-	}
-
+	rel, err := process.TryStart(m)
 	if err != nil {
-		app.Log.Fatal(err)
+		app.Log.Fatal(err.Error())
 	}
 
-	output.Table([][]string{rel})
+	output.TableOne(rel)
 }
