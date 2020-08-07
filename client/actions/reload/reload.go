@@ -53,7 +53,7 @@ func Run(args []string) {
 		for {
 			select {
 			case <-timer.C:
-				rel := shell.RunCmd(fmt.Sprintf("ps -ef | grep %s | grep -v grep | awk '{print $2}'", process.ProcessFile))
+				rel := shell.RunCmd(fmt.Sprintf("ps -ef | grep '%s ' | grep -v grep | awk '{print $2}'", process.ProcessFile))
 				if rel.Ok {
 					newPidStr := strings.TrimSpace(string(rel.Output))
 					newPid := iconv.MustInt(newPidStr)
