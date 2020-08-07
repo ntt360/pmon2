@@ -2,7 +2,10 @@ package worker
 
 import (
 	"errors"
+	"fmt"
+	"github.com/ntt360/pmon2/app"
 	"github.com/ntt360/pmon2/app/executor"
+	"github.com/ntt360/pmon2/app/model"
 	process2 "github.com/ntt360/pmon2/app/svc/process"
 	"github.com/ntt360/pmon2/app/utils"
 	"github.com/ntt360/pmon2/client/service"
@@ -28,6 +31,11 @@ func Restart(args []string) (string, error) {
 	cstName := newArgs.Get("name")
 	if len(cstName) > 0 && cstName != m.Name {
 		m.Name = cstName
+	}
+
+	// checkout process name whether exist except itself
+	if app.Db().First(&model.Process{}, "name = ? AND id != ?", cstName, m.ID).Error == nil {
+		return "", fmt.Errorf("process name: %s already used, please set other name by --name", cstName)
 	}
 
 	extArgs := newArgs.Get("def_params")

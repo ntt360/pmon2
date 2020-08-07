@@ -17,12 +17,12 @@ var db *gorm.DB
 
 func init() {
 	Log = logrus.New()
-	Log.SetLevel(logrus.DebugLevel)
+	Log.SetLevel(logrus.InfoLevel)
 	Log.SetOutput(os.Stdout)
 	Log.SetFormatter(&logrus.TextFormatter{
 		DisableTimestamp: true,
 	})
-	Log.SetReportCaller(true)
+	//Log.SetReportCaller(true)
 }
 
 func Instance(confDir string) {

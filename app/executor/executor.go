@@ -5,7 +5,6 @@ import (
 	"github.com/ntt360/pmon2/app/utils/crypto"
 	"os"
 	"os/user"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"syscall"
@@ -44,11 +43,6 @@ func Exec(processFile, customLogFile, name, extArgs string, user *user.User) (*m
 	process, err := os.StartProcess(processFile, processParams, attr)
 	if err != nil {
 		return nil, err
-	}
-
-	// get process file name
-	if len(name) <= 0 {
-		name = filepath.Base(processFile)
 	}
 
 	pModel := model.Process{
