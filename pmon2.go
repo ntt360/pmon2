@@ -8,6 +8,7 @@ import (
 	"github.com/ntt360/pmon2/client/actions/help"
 	"github.com/ntt360/pmon2/client/actions/list"
 	"github.com/ntt360/pmon2/client/actions/reload"
+	"github.com/ntt360/pmon2/client/actions/exec"
 	"github.com/ntt360/pmon2/client/actions/start"
 	"github.com/ntt360/pmon2/client/actions/stop"
 	"os"
@@ -28,13 +29,16 @@ func main() {
 	leftParams := args[1:]
 
 	switch firstParam {
+	case "exec":
+		exec.Run(leftParams)
+		break
 	case "start":
 		start.Run(leftParams)
 		break
 	case "list", "ls":
 		list.Run(leftParams)
 		break
-	case "desc": // show process detail info
+	case "desc", "show": // show process detail info
 		desc.Run(leftParams)
 		break
 	case "stop":

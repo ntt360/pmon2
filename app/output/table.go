@@ -35,6 +35,12 @@ func DescTable(tbData [][]string) {
 	table.Render()
 }
 
+// render single one table row
+func TableOne(data []string)  {
+	Table([][]string{data})
+}
+
+// render multi table rows
 func Table(tbData [][]string) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Id", "Name", "Pid", "Status", "User", "Cpu", "Mem", "Date"})
