@@ -5,8 +5,8 @@ import (
 	"github.com/goinbox/shell"
 	"github.com/ntt360/pmon2/app"
 	"github.com/ntt360/pmon2/app/model"
+	process2 "github.com/ntt360/pmon2/app/svc/process"
 	"github.com/ntt360/pmon2/app/utils/iconv"
-	"github.com/ntt360/pmon2/client/proxy"
 	"os"
 	"strconv"
 	"strings"
@@ -64,10 +64,6 @@ func runningTask()  {
 func checkFork(process model.Process) bool {
 	// try to get process new pid
 	rel := shell.RunCmd(fmt.Sprintf("ps -ef | grep '%s ' | grep -v grep | awk '{print $2}'", process.ProcessFile))
-	defer func() {
-		fmt.Printf("check process fork state %v", rel.Ok)
-	}()
-
 	if rel.Ok {
 		newPidStr := strings.TrimSpace(string(rel.Output))
 		newPid := iconv.MustInt(newPidStr)
@@ -77,7 +73,7 @@ func checkFork(process model.Process) bool {
 			if app.Db().Save(&process).Error != nil {
 				return false
 			}
-			fmt.Printf("process fork new pid %d", &process.Pid)
+
 			return true
 		}
 	}
@@ -97,22 +93,11 @@ func restartProcess(p model.Process) error {
 			return nil
 		}
 
-		return execStartProc(p)
+		_, err := process2.TryStart(p)
+		if err != nil {
+			return err
+		}
 	}
 
-	return nil
-}
-
-func execStartProc(p model.Process) error {
-	// restart process -- --user --log
-	args := []string{"--user", p.Username, "--log", p.Log}
-	if len(p.Args) > 0 {
-		args = append(args, "--", p.Args)
-	}
-	args = append([]string{"restart", p.ProcessFile}, args...)
-	_, err := proxy.RunProcess(args)
-	if err != nil {
-		return err
-	}
 	return nil
 }

@@ -3,10 +3,13 @@ package worker
 import (
 	"errors"
 	"fmt"
+	"github.com/ntt360/pmon2/app"
 	"github.com/ntt360/pmon2/app/executor"
+	"github.com/ntt360/pmon2/app/model"
 	"github.com/ntt360/pmon2/app/utils"
 	"github.com/ntt360/pmon2/client/service"
 	"os"
+	"path/filepath"
 	"time"
 )
 
@@ -25,8 +28,19 @@ func Start(args []string) (string, error) {
 		return "", nil
 	}
 
+	name :=  a.Get("name")
+	// get process file name
+	if len(name) <= 0 {
+		name = filepath.Base(processFile)
+	}
+
+	// checkout process name whether exist
+	if app.Db().First(&model.Process{}, "name = ?", name).Error == nil {
+		return "", fmt.Errorf("process name: %s already exist, please set other name by --name", name)
+	}
+
 	// start process
-	process, err := executor.Exec(processFile, a.Get("log"), a.Get("name"), a.Get("def_params"), runUser)
+	process, err := executor.Exec(processFile, a.Get("log"), name, a.Get("def_params"), runUser)
 	if err != nil {
 		return "", err
 	}

@@ -15,7 +15,7 @@ func Run(args []string) {
 
 	val := args[0]
 	var m model.Process
-	if err := app.Db().Debug().First(&m, "id = ? or name = ?", val, val).Error; err != nil {
+	if err := app.Db().First(&m, "id = ? or name = ?", val, val).Error; err != nil {
 		app.Log.Fatal(fmt.Sprintf("the process %s not exist", val))
 	}
 
