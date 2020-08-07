@@ -5,6 +5,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/ntt360/pmon2/app"
 	"github.com/ntt360/pmon2/app/model"
+	"github.com/ntt360/pmon2/app/output"
 	"os"
 	"os/exec"
 	"strconv"
@@ -69,5 +70,5 @@ func Run(args []string) {
 		app.Log.Fatalf("stop the process %s failed", val)
 	}
 
-	app.Log.Infof("stop process %s success \n", val)
+	output.Table([][]string{process.RenderTable()})
 }

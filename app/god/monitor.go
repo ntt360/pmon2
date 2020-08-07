@@ -2,11 +2,14 @@ package god
 
 import (
 	"fmt"
+	"github.com/goinbox/shell"
 	"github.com/ntt360/pmon2/app"
 	"github.com/ntt360/pmon2/app/model"
+	"github.com/ntt360/pmon2/app/utils/iconv"
 	"github.com/ntt360/pmon2/client/proxy"
 	"os"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 )
@@ -57,6 +60,31 @@ func runningTask()  {
 	}
 }
 
+// Detects whether a new process is created
+func checkFork(process model.Process) bool {
+	// try to get process new pid
+	rel := shell.RunCmd(fmt.Sprintf("ps -ef | grep '%s ' | grep -v grep | awk '{print $2}'", process.ProcessFile))
+	defer func() {
+		fmt.Printf("check process fork state %v", rel.Ok)
+	}()
+
+	if rel.Ok {
+		newPidStr := strings.TrimSpace(string(rel.Output))
+		newPid := iconv.MustInt(newPidStr)
+		if newPid != 0 && newPid != process.Pid {
+			process.Pid = newPid
+			process.Status = model.StatusRunning
+			if app.Db().Save(&process).Error != nil {
+				return false
+			}
+			fmt.Printf("process fork new pid %d", &process.Pid)
+			return true
+		}
+	}
+
+	return false
+}
+
 func restartProcess(p model.Process) error {
 	_, err := os.Stat(fmt.Sprintf("/proc/%d/status", p.Pid))
 	if err == nil { // process already running
@@ -65,6 +93,10 @@ func restartProcess(p model.Process) error {
 
 	// proc status file not exit
 	if os.IsNotExist(err) && (p.Status == model.StatusRunning || p.Status == model.StatusFailed) {
+		if checkFork(p) {
+			return nil
+		}
+
 		return execStartProc(p)
 	}
 

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/ntt360/pmon2/app"
 	"github.com/ntt360/pmon2/app/model"
-	"strconv"
 )
 
 type Start struct {
@@ -38,16 +37,7 @@ func (s *Start) Rsp(suffix string) ([]byte, error) {
 }
 
 func renderOutput(m *model.Process) model.Rsp {
-	rel := []string{
-		strconv.Itoa(int(m.ID)),
-		m.Name,
-		strconv.Itoa(m.Pid),
-		m.Status,
-		m.Username,
-		m.CreatedAt.Format("2006-01-02 15:04:05"),
-		m.UpdatedAt.Format("2006-01-02 15:04:05"),
-	}
-
+	rel := m.RenderTable()
 	jsonStr, _ := json.Marshal(rel)
 	rsp := model.Rsp{
 		Code: 0,

@@ -2,6 +2,7 @@ package model
 
 import (
 	"encoding/json"
+	"github.com/ntt360/pmon2/app/utils/cpu"
 	"os"
 	"strconv"
 	"time"
@@ -43,12 +44,19 @@ func (p Process) MustJson() string {
 }
 
 func (p Process) RenderTable() []string {
+	cpuVal, memVal := "0", "0"
+	if p.Status == StatusRunning {
+		cpuVal, memVal = cpu.GetExtraInfo(p.Pid)
+	}
+
 	return []string{
 		strconv.Itoa(int(p.ID)),
 		p.Name,
 		strconv.Itoa(p.Pid),
 		p.Status,
 		p.Username,
+		cpuVal,
+		memVal,
 		p.UpdatedAt.Format("2006-01-02 15:04:05"),
 	}
 }
