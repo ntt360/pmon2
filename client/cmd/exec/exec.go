@@ -3,11 +3,26 @@ package exec
 import (
 	"github.com/ntt360/pmon2/app"
 	"github.com/ntt360/pmon2/app/output"
+	"github.com/spf13/cobra"
 	"log"
 	"os"
 )
 
-func Run(args []string) {
+var Cmd = &cobra.Command{
+	Use:                "exec",
+	Aliases:            []string{"run"},
+	DisableFlagParsing: true,
+	Short:              "run one binary golang process file",
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) <= 0 {
+			app.Log.Fatal("porcess params is empty")
+		}
+
+		cmdRun(args)
+	},
+}
+
+func cmdRun(args []string) {
 	_, err := os.Stat(app.Config.Sock)
 	if os.IsNotExist(err) {
 		log.Fatal(err)

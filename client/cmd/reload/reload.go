@@ -8,13 +8,23 @@ import (
 	"github.com/ntt360/pmon2/app/model"
 	"github.com/ntt360/pmon2/app/output"
 	"github.com/ntt360/pmon2/app/utils/iconv"
+	"github.com/spf13/cobra"
 	"os"
 	"strings"
 	"syscall"
 	"time"
 )
 
-func Run(args []string) {
+var Cmd = &cobra.Command{
+	Use:   "reload",
+	Short: "reload some process",
+	Long:  "pmon2 will send -SIGUSR2 signal to the process.",
+	Run: func(cmd *cobra.Command, args []string) {
+		cmdRun(args)
+	},
+}
+
+func cmdRun(args []string) {
 	processVal, err := argsValid(args)
 	if err != nil {
 		app.Log.Fatal(err.Error())
@@ -45,7 +55,7 @@ func Run(args []string) {
 
 	// try to get process new pid
 	pidChannel := make(chan int, 1)
-	ctx, ctxCancel := context.WithTimeout(context.Background(), time.Second * 5)
+	ctx, ctxCancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer ctxCancel()
 	go func(ctx context.Context) {
 		timer := time.NewTicker(time.Millisecond * 300)

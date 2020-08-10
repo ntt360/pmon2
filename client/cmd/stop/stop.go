@@ -6,12 +6,22 @@ import (
 	"github.com/ntt360/pmon2/app"
 	"github.com/ntt360/pmon2/app/model"
 	"github.com/ntt360/pmon2/app/output"
+	"github.com/spf13/cobra"
 	"os"
 	"os/exec"
 	"strconv"
 )
 
-func Run(args []string) {
+var Cmd = &cobra.Command{
+	Use:     "stop",
+	Short:   "stop running process",
+	Example: "sudo pmon2 stop [id or name]",
+	Run: func(cmd *cobra.Command, args []string) {
+		cmdRun(args)
+	},
+}
+
+func cmdRun(args []string) {
 	var val string
 	if len(args) <= 0 {
 		app.Log.Fatalf("must input some process id or name")

@@ -5,10 +5,20 @@ import (
 	"github.com/ntt360/pmon2/app"
 	"github.com/ntt360/pmon2/app/model"
 	"github.com/ntt360/pmon2/app/output"
+	"github.com/spf13/cobra"
 	"strconv"
 )
 
-func Run(args []string) {
+var Cmd = &cobra.Command{
+	Use:                        "desc",
+	Aliases:                    []string{"show"},
+	Short:                      "print the process detail message",
+	Run: func(cmd *cobra.Command, args []string) {
+		cmdRun(args)
+	},
+}
+
+func cmdRun(args []string) {
 	val := args[0]
 
 	var process model.Process
