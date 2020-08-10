@@ -4,10 +4,20 @@ import (
 	"github.com/ntt360/pmon2/app"
 	"github.com/ntt360/pmon2/app/model"
 	"github.com/ntt360/pmon2/app/output"
+	"github.com/spf13/cobra"
 )
 
+var Cmd = &cobra.Command{
+	Use:                        "ls",
+	Aliases:                    []string{"list"},
+	Short:                      "list all processes",
+	Run: func(cmd *cobra.Command, args []string) {
+		runCmd(nil)
+	},
+}
+
 // show all process list
-func Run(ars []string) {
+func runCmd(_ []string) {
 	var all []model.Process
 	err := app.Db().Find(&all).Error
 	if err != nil {

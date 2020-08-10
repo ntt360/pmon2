@@ -6,9 +6,18 @@ import (
 	"github.com/ntt360/pmon2/app/model"
 	"github.com/ntt360/pmon2/app/output"
 	"github.com/ntt360/pmon2/app/svc/process"
+	"github.com/spf13/cobra"
 )
 
-func Run(args []string) {
+var Cmd = &cobra.Command{
+	Use:   "start",
+	Short: "start some process by id or name",
+	Run: func(cmd *cobra.Command, args []string) {
+		cmdRun(args)
+	},
+}
+
+func cmdRun(args []string) {
 	if len(args) == 0 {
 		app.Log.Fatal("please input start process id or name")
 	}
