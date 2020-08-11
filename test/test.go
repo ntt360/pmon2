@@ -1,20 +1,20 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/ntt360/gracehttp"
 	"log"
+	"math/rand"
+	"time"
 )
 
 func main() {
-	//prjHome := flag.String("prj_home", "", "project home path need")
-	//env := flag.String("env", "", "env path")
-	flag.Parse()
-	fmt.Println(flag.Args())
+	rand.Seed(time.Now().Unix())
 
-	err := gracehttp.ListenAndServe("0.0.0.0:9456", gin.Default())
+	randPort := rand.Intn(20000) + 10000
+	addr := fmt.Sprintf("0.0.0.0:%d", randPort)
+	err := gracehttp.ListenAndServe(addr, gin.Default())
 	if err != nil {
 		log.Fatal(err)
 	}
