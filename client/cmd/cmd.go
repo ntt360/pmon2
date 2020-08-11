@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/ntt360/pmon2/client/cmd/del"
 	"github.com/ntt360/pmon2/client/cmd/desc"
 	"github.com/ntt360/pmon2/client/cmd/exec"
@@ -11,9 +12,18 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const ver = "1.0.0"
+
 var rootCmd = &cobra.Command{
 	Use:     "pmon2",
 	Short:   "pmon2 client cli",
+}
+
+var verCmd = &cobra.Command{
+	Use: "version",
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Printf("Pmon2: %s \n", ver)
+	},
 }
 
 func Exec() error {
@@ -25,6 +35,7 @@ func Exec() error {
 		stop.Cmd,
 		reload.Cmd,
 		start.Cmd,
+		verCmd,
 	)
 	return rootCmd.Execute()
 }
