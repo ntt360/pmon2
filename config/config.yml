@@ -6,7 +6,7 @@
 data: "/etc/pmon2/data"
 
 # logs dir
-logs: "/var/log/pmon2/log"
+logs: "/var/log/pmon2/"
 
 # socket file
 sock: "/var/run/pmon2/pmon2.sock"
