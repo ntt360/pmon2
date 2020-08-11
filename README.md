@@ -19,7 +19,7 @@ pmon start [./二进制文件名] [参数]
 ### 2. 查看进程列表（list）
 
 ```bash
-pmon list 
+pmon list
 ```
 
 ### 3. 停止进程
@@ -37,7 +37,7 @@ pmon reload [进程名称或进程ID]
 ### 5. 删除进程
 
 ```bash
-pmon delete [进程名称或ID]
+pmon del [进程名称或ID]
 ```
 
 ### 6. 日志操作
