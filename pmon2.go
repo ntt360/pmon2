@@ -15,31 +15,4 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	//switch firstParam {
-	//case "exec":
-	//	exec.Run(leftParams)
-	//	break
-	//case "start":
-	//	start.Run(leftParams)
-	//	break
-	//case "list", "ls":
-	//	list.Run(leftParams)
-	//	break
-	//case "desc", "show": // show process detail info
-	//	desc.Run(leftParams)
-	//	break
-	//case "stop":
-	//	stop.Run(leftParams)
-	//	break
-	//case "del", "delete":
-	//	del.Run(leftParams)
-	//	break
-	//case "reload":
-	//	reload.Run(leftParams)
-	//	break
-	//default:
-	//	help.Run(leftParams)
-	//}
-
 }
