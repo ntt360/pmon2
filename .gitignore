@@ -17,3 +17,5 @@
 # idea ide
 .idea
 bin
+
+config.dev.yml

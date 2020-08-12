@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-func FindByProcessFile(pFile string) *model.Process{
+func FindByProcessFile(pFile string) *model.Process {
 	var rel model.Process
 	err := app.Db().First(&rel, "process_file = ?", pFile).Error
 	if err != nil {
@@ -29,13 +29,15 @@ func IsRunning(pid int) bool {
 }
 
 func TryStart(m model.Process) ([]string, error) {
-	// restart process -- --user --log
-	args := []string{"--user", m.Username, "--log", m.Log}
-	if len(m.Args) > 0 {
-		args = append(args, "--", m.Args)
+	var flagsModel = model.ExecFlags{
+		User:          m.Username,
+		Log:           m.Log,
+		NoAutoRestart: !m.AutoRestart,
+		Args:          m.Args,
+		Name:          m.Name,
 	}
-	args = append([]string{"restart", m.ProcessFile}, args...)
-	data, err := proxy.RunProcess(args)
+
+	data, err := proxy.RunProcess([]string{"restart", m.ProcessFile, flagsModel.Json()})
 	if err != nil {
 		return nil, err
 	}

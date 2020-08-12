@@ -22,16 +22,18 @@ func init() {
 	Log.SetFormatter(&logrus.TextFormatter{
 		DisableTimestamp: true,
 	})
-	//Log.SetReportCaller(true)
+	Log.SetReportCaller(true)
 }
 
-func Instance(confDir string) {
+func Instance(confDir string) error {
 	tpl, err := boot.Conf(confDir)
 	if err != nil {
-		Log.Fatal(err)
+		return err
 	}
 
 	Config = tpl
+
+	return nil
 }
 
 func Db() *gorm.DB {

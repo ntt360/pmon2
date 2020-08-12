@@ -10,7 +10,7 @@ import (
 	"syscall"
 )
 
-func Exec(processFile, customLogFile, name, extArgs string, user *user.User) (*model.Process, error) {
+func Exec(processFile, customLogFile, name, extArgs string, user *user.User, autoRestart bool) (*model.Process, error) {
 	logPath, err := getLogPath(customLogFile, crypto.Crc32Hash(processFile))
 	if err != nil {
 		return nil, err
@@ -56,6 +56,7 @@ func Exec(processFile, customLogFile, name, extArgs string, user *user.User) (*m
 		Uid:         user.Uid,
 		Gid:         user.Gid,
 		Username:    user.Username,
+		AutoRestart: autoRestart,
 	}
 
 	return &pModel, nil

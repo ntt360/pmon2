@@ -1,14 +1,14 @@
 package worker
 
 import (
-	"github.com/ntt360/pmon2/app/utils"
+	"github.com/ntt360/pmon2/app/model"
 	"os"
 	"os/user"
 	"strconv"
 )
 
-func GetProcUser(a *utils.Args) (*user.User, error) {
-	runUser := a.Get("user")
+func GetProcUser(a *model.ExecFlags) (*user.User, error) {
+	runUser := a.User
 	var curUser *user.User
 	var err error
 

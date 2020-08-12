@@ -28,9 +28,18 @@ type Process struct {
 	Args        string      `json:"args"`
 	Status      string      `json:"status"`
 	Pointer     *os.Process `gorm:"-" json:"-"`
+	AutoRestart bool        `json:"auto_restart"`
 	Uid         string
 	Username    string
 	Gid         string
+}
+
+func (p Process) NoAutoRestartStr() string {
+	if !p.AutoRestart {
+		return "true"
+	} else {
+		return "false"
+	}
 }
 
 func (Process) TableName() string {

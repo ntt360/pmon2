@@ -6,10 +6,10 @@ import (
 	"github.com/ntt360/pmon2/client/proxy"
 )
 
-func restart(m *model.Process, args []string) ([]string, error) {
+func restart(m *model.Process, flags string) ([]string, error) {
 	// only stopped process or failed process allow run start
 	if m.Status == model.StatusStopped || m.Status == model.StatusFailed {
-		newData, err := reloadProcess(m, args)
+		newData, err := reloadProcess(m, flags)
 		if err != nil {
 			return nil, err
 		}
@@ -20,9 +20,8 @@ func restart(m *model.Process, args []string) ([]string, error) {
 	return m.RenderTable(), nil
 }
 
-func reloadProcess(m *model.Process, args []string) ([]string, error) {
-	args = append([]string{"restart", m.ProcessFile}, args[1:]...)
-	data, err := proxy.RunProcess(args)
+func reloadProcess(m *model.Process, flags string) ([]string, error) {
+	data, err := proxy.RunProcess([]string{"restart", m.ProcessFile, flags})
 
 	if err != nil {
 		return nil, err

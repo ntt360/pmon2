@@ -10,9 +10,9 @@ import (
 )
 
 var Cmd = &cobra.Command{
-	Use:                        "desc",
-	Aliases:                    []string{"show"},
-	Short:                      "print the process detail message",
+	Use:     "desc",
+	Aliases: []string{"show"},
+	Short:   "print the process detail message",
 	Run: func(cmd *cobra.Command, args []string) {
 		cmdRun(args)
 	},
@@ -42,6 +42,7 @@ func cmdRun(args []string) {
 		{"args", process.Args},
 		{"user", process.Username},
 		{"log", process.Log},
+		{"no-autorestart", process.NoAutoRestartStr()},
 		{"created_at", process.CreatedAt.Format("2006-01-02 15:04:05")},
 		{"updated_at", process.UpdatedAt.Format("2006-01-02 15:04:05")},
 	}

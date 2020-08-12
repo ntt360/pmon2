@@ -6,29 +6,26 @@ import (
 	"github.com/ntt360/pmon2/app"
 	"github.com/ntt360/pmon2/app/executor"
 	"github.com/ntt360/pmon2/app/model"
-	"github.com/ntt360/pmon2/app/utils"
 	"github.com/ntt360/pmon2/client/service"
 	"os"
 	"path/filepath"
 	"time"
 )
 
-func Start(args []string) (string, error) {
+func Start(processFile string, flags *model.ExecFlags) (string, error) {
 	// prepare params
-	processFile := args[0]
 	file, err := os.Stat(processFile)
 	if os.IsNotExist(err) || file.IsDir() {
 		return "", errors.New(fmt.Sprintf("%s not exist", processFile))
 	}
-	a := utils.ParseArgs(args)
 
 	// get run process user
-	runUser, err := GetProcUser(a)
+	runUser, err := GetProcUser(flags)
 	if err != nil {
 		return "", nil
 	}
 
-	name :=  a.Get("name")
+	name :=  flags.Name
 	// get process file name
 	if len(name) <= 0 {
 		name = filepath.Base(processFile)
@@ -40,7 +37,7 @@ func Start(args []string) (string, error) {
 	}
 
 	// start process
-	process, err := executor.Exec(processFile, a.Get("log"), name, a.Get("def_params"), runUser)
+	process, err := executor.Exec(processFile, flags.Log, name, flags.Args, runUser, !flags.NoAutoRestart)
 	if err != nil {
 		return "", err
 	}

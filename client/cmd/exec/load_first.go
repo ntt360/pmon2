@@ -11,9 +11,8 @@ import (
 	"path/filepath"
 )
 
-func loadFirst(execPath string, args []string) ([]string, error) {
-	args = append([]string{"start", execPath }, args[1:]...)
-	data, err := proxy.RunProcess(args)
+func loadFirst(execPath string, flags string) ([]string, error) {
+	data, err := proxy.RunProcess([]string{"start", execPath, flags})
 	if err != nil {
 		return nil, err
 	}

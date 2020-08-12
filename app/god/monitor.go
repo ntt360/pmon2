@@ -32,7 +32,8 @@ func runMonitor() {
 }
 
 var pendingTask sync.Map
-func runningTask()  {
+
+func runningTask() {
 	var all []model.Process
 	err := app.Db().Find(&all).Error
 	if err != nil {
@@ -40,7 +41,7 @@ func runningTask()  {
 	}
 
 	for _, process := range all {
-		if process.Status == model.StatusStopped || process.Status == model.StatusReload || process.Status == model.StatusInit{
+		if process.Status == model.StatusStopped || process.Status == model.StatusReload || process.Status == model.StatusInit {
 			// state no need restart
 			continue
 		}
@@ -90,6 +91,15 @@ func restartProcess(p model.Process) error {
 	// proc status file not exit
 	if os.IsNotExist(err) && (p.Status == model.StatusRunning || p.Status == model.StatusFailed) {
 		if checkFork(p) {
+			return nil
+		}
+
+		// check whether set auto restart
+		if !p.AutoRestart {
+			if p.Status == model.StatusRunning { // but process is dead, update db state
+				p.Status = model.StatusFailed
+				app.Db().Save(&p)
+			}
 			return nil
 		}
 

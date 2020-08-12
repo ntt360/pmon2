@@ -7,28 +7,22 @@ import (
 	"github.com/ntt360/pmon2/app/executor"
 	"github.com/ntt360/pmon2/app/model"
 	process2 "github.com/ntt360/pmon2/app/svc/process"
-	"github.com/ntt360/pmon2/app/utils"
 	"github.com/ntt360/pmon2/client/service"
 	"time"
 )
 
-func Restart(args []string) (string, error) {
-	pFile := args[0]
-
+func Restart(pFile string, flags *model.ExecFlags) (string, error) {
 	m := process2.FindByProcessFile(pFile)
 	if m == nil {
 		return "", errors.New("try to get process data error")
 	}
 
-	// merge new params
-	newArgs := utils.ParseArgs(args)
-
-	cstLog := newArgs.Get("log")
+	cstLog := flags.Log
 	if len(cstLog) > 0 && cstLog != m.Log {
 		m.Log = cstLog
 	}
 
-	cstName := newArgs.Get("name")
+	cstName := flags.Name
 	if len(cstName) > 0 && cstName != m.Name {
 		m.Name = cstName
 	}
@@ -38,18 +32,18 @@ func Restart(args []string) (string, error) {
 		return "", fmt.Errorf("process name: %s already used, please set other name by --name", cstName)
 	}
 
-	extArgs := newArgs.Get("def_params")
+	extArgs := flags.Args
 	if len(extArgs) > 0 {
 		m.Args = extArgs
 	}
 
 	// get run process user
-	runUser, err := GetProcUser(newArgs)
+	runUser, err := GetProcUser(flags)
 	if err != nil {
 		return "", nil
 	}
 
-	process, err := executor.Exec(m.ProcessFile, m.Log, m.Name, m.Args, runUser)
+	process, err := executor.Exec(m.ProcessFile, m.Log, m.Name, m.Args, runUser, !flags.NoAutoRestart)
 	if err != nil {
 		return "", err
 	}
