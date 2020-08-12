@@ -15,8 +15,8 @@ import (
 const ver = "1.0.0"
 
 var rootCmd = &cobra.Command{
-	Use:     "pmon2",
-	Short:   "pmon2 client cli",
+	Use:   "pmon2",
+	Short: "pmon2 client cli",
 }
 
 var verCmd = &cobra.Command{
@@ -37,5 +37,6 @@ func Exec() error {
 		start.Cmd,
 		verCmd,
 	)
+
 	return rootCmd.Execute()
 }

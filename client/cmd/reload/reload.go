@@ -7,6 +7,7 @@ import (
 	"github.com/ntt360/pmon2/app"
 	"github.com/ntt360/pmon2/app/model"
 	"github.com/ntt360/pmon2/app/output"
+	"github.com/ntt360/pmon2/app/utils/array"
 	"github.com/ntt360/pmon2/app/utils/iconv"
 	"github.com/spf13/cobra"
 	"os"
@@ -14,6 +15,9 @@ import (
 	"syscall"
 	"time"
 )
+
+var signals = []string{"HUP", "USR1", "USR2"}
+var sigFlag string
 
 var Cmd = &cobra.Command{
 	Use:   "reload",
@@ -24,7 +28,19 @@ var Cmd = &cobra.Command{
 	},
 }
 
+func init() {
+	Cmd.Flags().StringVarP(&sigFlag, "sig", "s", "", "--sig [unix signal name, such as: HUP]")
+}
+
 func cmdRun(args []string) {
+	// check flag
+	if len(sigFlag) > 0 {
+		if !array.In(signals, strings.ToUpper(sigFlag)) {
+			app.Log.Error("the signal only support: HUP，USR1，USR2")
+			return
+		}
+	}
+
 	processVal, err := argsValid(args)
 	if err != nil {
 		app.Log.Fatal(err.Error())
@@ -47,7 +63,7 @@ func cmdRun(args []string) {
 	if err == nil { // process exist
 		// kill process
 		p, _ := os.FindProcess(process.Pid)
-		err := p.Signal(syscall.SIGUSR2)
+		err := p.Signal(getSignal())
 		if err != nil {
 			app.Log.Fatal(err)
 		}
@@ -92,5 +108,16 @@ func cmdRun(args []string) {
 		}
 
 		app.Log.Fatal(fmt.Printf("process %s reload failed", processVal))
+	}
+}
+
+func getSignal() syscall.Signal {
+	switch strings.ToUpper(sigFlag) {
+	case "HUP":
+		return syscall.SIGHUP
+	case "USR1":
+		return syscall.SIGUSR1
+	default:
+		return syscall.SIGUSR2
 	}
 }
