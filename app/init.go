@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/ntt360/pmon2/app/boot"
 	"github.com/ntt360/pmon2/app/conf"
 	"github.com/ntt360/pmon2/app/model"
