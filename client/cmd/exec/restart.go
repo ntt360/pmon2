@@ -2,6 +2,7 @@ package exec
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/ntt360/pmon2/app/model"
 	"github.com/ntt360/pmon2/client/proxy"
 )
@@ -17,7 +18,7 @@ func restart(m *model.Process, flags string) ([]string, error) {
 		return newData, nil
 	}
 
-	return m.RenderTable(), nil
+	return nil, fmt.Errorf("the process already start")
 }
 
 func reloadProcess(m *model.Process, flags string) ([]string, error) {
