@@ -57,6 +57,19 @@ func Db() *gorm.DB {
 		if !db.HasTable(&model.Process{}) {
 			db.CreateTable(&model.Process{})
 		}
+
+		if !db.HasTable(&model.App{}) {
+			db.CreateTable(&model.App{})
+		}
+
+		// sync data
+		var appModel model.App
+		err = db.First(&appModel).Error
+		if err != nil {
+			if err == gorm.ErrRecordNotFound { // first version
+				db.Create(&model.App{Version: conf.Version})
+			}
+		}
 	})
 
 	return db
