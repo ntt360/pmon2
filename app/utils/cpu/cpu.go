@@ -29,5 +29,5 @@ func GetExtraInfo(pid int) (string, string) {
 		memVal = strconv.Itoa(int(info.Memory))
 	}
 
-	return cpuVal, memVal
+	return cpuVal + "%", memVal
 }
