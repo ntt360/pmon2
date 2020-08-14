@@ -144,7 +144,7 @@ sudo pmon2 del [id or name]
 ```go
 sudo pmon2 show [id or name]
 ```
-![](http://p0.qhimg.com/t015cc54b46e0d1190d.png)
+![](https://jscssimg-img.oss-cn-beijing.aliyuncs.com/89c3f649a583a852.png)
 
 ## 常见问题
 
