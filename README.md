@@ -145,7 +145,7 @@ sudo pmon2 del [id or name]
 sudo pmon2 show [id or name]
 ```
 
-<img src="http://p0.qhimg.com/t015cc54b46e0d1190d.png" style="max-width:680px" />
+<img src="http://p0.qhimg.com/t015cc54b46e0d1190d.png" />
 
 
 ## 常见问题
