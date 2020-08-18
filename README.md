@@ -27,13 +27,13 @@ Go官方一直没有提供任何进程管理工具，对于 `Go` 服务的部署
 #### CentOS7
 
 ```bash
-sudo yum install -y http://ntt360.com/rpms/pmon2-1.7.5-1.el7.x86_64.rpm
+sudo yum install -y http://ntt360.com/rpms/pmon2-1.7.6-1.el7.x86_64.rpm
 ```
 
 #### CentOS6
 
 ```bash
-sudo yum install -y http://ntt360.com/rpms/pmon2-1.7.5-1.el6.x86_64.rpm
+sudo yum install -y http://ntt360.com/rpms/pmon2-1.7.6-1.el6.x86_64.rpm
 ```
 
 ## 命令介绍
