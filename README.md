@@ -35,7 +35,7 @@ sudo yum install -y http://ntt360.com/rpms/pmon2-1.7.6-1.el7.x86_64.rpm
 ```bash
 sudo yum install -y http://ntt360.com/rpms/pmon2-1.7.6-1.el6.x86_64.rpm
 ```
-:exclamation::exclamation::exclamation: 注意：
+:exclamation::exclamation: **注意：** :exclamation::exclamation:
 
 首次安装 `pmon2` 后，`pmon2` 服务没有自动启动，首次安装需要你手动启动该服务：
 
@@ -47,6 +47,10 @@ sudo initctl start pmond
 sudo systemctl start pmond
 ```
 
+`pmond` 作为 `pmon2` 的常驻服务进程，负责管理所有启动的进程，比如检测进程是否崩溃等。
+
+##
+##
 ## 命令介绍
 
 #### 查看帮助
