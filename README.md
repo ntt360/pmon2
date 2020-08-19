@@ -175,3 +175,24 @@ pmon2 自带一个 `logrotate` 日志切割配置文件，会默认切割 `/var/
 
 目前 `rpm` 仅适配 `CentOS6` 和 `CentOS7`，但 `Pmon2` 本身可运行在任何 `linux` 环境下，如有其它平台打包需求，请联系我们。
 
+### 4. 命令行自动补全
+
+pmon2 提供 bash 自动补全脚本，如果你发觉在 `sudo` 模式下命令无法自动补全，请安装 `bash-completion`，退出终端重新进入即可：
+
+```bash
+sudo yum intsall -y bash-completion
+```
+
+### 5. FATA stat /var/run/pmon2/pmon2.sock: no such file or directory
+
+如果遇到如上报错，请尝试运行：
+
+```bash
+# centos6 使用 initctl
+sudo initctl start pmond
+
+# centos7 使用 systemd
+sudo systemctl start pmond
+```
+
+原因请参考，安装启动部分说明。
