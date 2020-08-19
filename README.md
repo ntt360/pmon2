@@ -36,7 +36,7 @@ sudo yum install -y http://ntt360.com/rpms/pmon2-1.7.6-1.el7.x86_64.rpm
 sudo yum install -y http://ntt360.com/rpms/pmon2-1.7.6-1.el6.x86_64.rpm
 ```
 
-<span style="color:#db0424; font-weight: bold">注意：</span>
+<p style="color:#db0424;">注意：</p>
 
 首次安装 `pmon2` 后，`pmon2` 服务没有自动启动，首次安装需要你手动启动该服务：
 
