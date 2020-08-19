@@ -37,13 +37,13 @@ sudo yum install -y http://ntt360.com/rpms/pmon2-1.7.6-1.el6.x86_64.rpm
 ```
 :exclamation::exclamation: **注意：** :exclamation::exclamation:
 
-首次安装 `pmon2` 后，`pmon2` 服务没有自动启动，首次安装需要你手动启动该服务：
+首次安装 `pmon2` 后，`pmon2` 服务没有自动启动，需要你手动启动该服务：
 
 ```bash
-# centos6
+# centos6 使用 initctl
 sudo initctl start pmond
 
-# centos7
+# centos7 使用 systemd
 sudo systemctl start pmond
 ```
 
