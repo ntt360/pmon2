@@ -1,5 +1,5 @@
 [Unit]
-Description=Pmon2 Pmond Daemon Service
+Description=Pmon2 Daemon Service
 After=network.target
 
 [Service]
