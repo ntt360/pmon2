@@ -19,7 +19,7 @@ Go官方一直没有提供任何进程管理工具，对于 `Go` 服务的部署
 
 默认的，`pmon2` 所管理的进程如果发生异常崩溃，`pmon2` 也会尝试自动重启该进程。如果你不希望某个进程自动重启，那么你可以设置一个 `--no-autorestart` 参数即可。具体请参考：常用命令使用章节。
 
-关于 `Pmon2` 的诞生，欢迎阅读：[go进程管理工具Pmon2实践](https://yuankan.co/article/golang-process-manager-tool-pmon2)
+关于 `Pmon2` 的诞生，欢迎阅读：[go进程管理工具Pmon2实践](https://gofr.co/article/golang-process-manager-tool-pmon2)
 
 
 ## 如何安装

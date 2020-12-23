@@ -7,6 +7,8 @@ import (
 	"syscall"
 )
 
+const logSuffix = ".log"
+
 func getLogPath(customLogFile string, hash string) (string, error) {
 	prjDir := strings.TrimRight(app.Config.GetLogsDir(), "/")
 	if len(customLogFile) <= 0 {
@@ -17,7 +19,7 @@ func getLogPath(customLogFile string, hash string) (string, error) {
 				return "", err
 			}
 		}
-		customLogFile = prjDir + "/" + hash
+		customLogFile = prjDir + "/" + hash + logSuffix
 	}
 
 	return customLogFile, nil
