@@ -43,13 +43,11 @@ sudo yum install -y http://ntt360.com/rpms/pmon2-[current-version]-1.el6.x86_64.
 
 ```bash
 # centos6 使用 initctl
-sudo initctl start pmond
+sudo initctl start pmon2
 
 # centos7 使用 systemd
-sudo systemctl start pmond
+sudo systemctl start pmon2
 ```
-
-`pmond` 作为 `pmon2` 的常驻服务进程，负责管理所有启动的进程，比如检测进程是否崩溃等。
 
 ###
 ###
@@ -191,10 +189,10 @@ sudo yum intsall -y bash-completion
 
 ```bash
 # centos6 使用 initctl
-sudo initctl start pmond
+sudo initctl start pmon2
 
 # centos7 使用 systemd
-sudo systemctl start pmond
+sudo systemctl start pmon2
 ```
 
 原因请参考，安装启动部分说明。
