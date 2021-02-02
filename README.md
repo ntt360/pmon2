@@ -24,7 +24,15 @@ Go官方一直没有提供任何进程管理工具，对于 `Go` 服务的部署
 
 ## 如何安装
 
-目前 `Pmon2` 支持 `CentOS6`、`CentOS7`，以及对于 `RedHat`系列，直接安装对应版本的 `rpm` 包即可：
+目前 `Pmon2` 支持 `CentOS6`、`CentOS7`、`Debian/Ubuntu`
+
+### 对于RedHat系列，直接安装对应版本的rpm包即可
+
+#### CentOS6
+
+```bash
+sudo yum install -y http://ntt360.com/rpms/pmon2-[current-version]-1.el6.x86_64.rpm
+```
 
 #### CentOS7
 
@@ -32,11 +40,13 @@ Go官方一直没有提供任何进程管理工具，对于 `Go` 服务的部署
 sudo yum install -y http://ntt360.com/rpms/pmon2-[current-version]-1.el7.x86_64.rpm
 ```
 
-#### CentOS6
+### 对于Debian/Ubuntu，需要下载deb包，使用dpkg进行安装
 
+#### Debian/Ubuntu
 ```bash
-sudo yum install -y http://ntt360.com/rpms/pmon2-[current-version]-1.el6.x86_64.rpm
+sn=pmon2_[current-version]-1_amd64.deb && wget http://ntt360.com/debs/${sn} -O /tmp/${sn} && sudo dpkg -i /tmp/${sn}
 ```
+
 :exclamation::exclamation: **注意：** :exclamation::exclamation:
 
 首次安装 `pmon2` 后，`pmon2` 服务没有自动启动，需要你手动启动该服务：
@@ -47,10 +57,11 @@ sudo initctl start pmon2
 
 # centos7 使用 systemd
 sudo systemctl start pmon2
+
+# Debian/Ubuntu
+sudo /usr/local/pmon2/bin/pmond &
 ```
 
-###
-###
 ## 命令介绍
 
 #### 查看帮助
@@ -169,11 +180,11 @@ pmon2 自带一个 `logrotate` 日志切割配置文件，会默认切割 `/var/
 
 ### 2.进程启动参数必须传绝对路径？
 
-启动进程是，如果你传递的参数中存在路径，请使用绝对路径，`pmon2` 启动进程会新起一个新的沙河环境以避免环境变量污染问题。
+启动进程是，如果你传递的参数中存在路径，请使用绝对路径，`pmon2` 启动进程会新起一个新的沙盒环境以避免环境变量污染问题。
 
 ### 3. 平台支持
 
-目前 `rpm` 仅适配 `CentOS6` 和 `CentOS7`，但 `Pmon2` 本身可运行在任何 `linux` 环境下，如有其它平台打包需求，请联系我们。
+目前 `rpm` 适配 `CentOS6` 、 `CentOS7` 和 `Debian/Ubuntu`， `Pmon2` 本身可运行在任何 `linux` 环境下，如有其它平台打包需求，请联系我们。
 
 ### 4. 命令行自动补全
 
@@ -193,6 +204,9 @@ sudo initctl start pmon2
 
 # centos7 使用 systemd
 sudo systemctl start pmon2
+
+# Debian/Ubuntu
+sudo /usr/local/pmon2/bin/pmond &
 ```
 
 原因请参考，安装启动部分说明。
