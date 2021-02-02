@@ -170,7 +170,7 @@ sudo pmon2 del [id or name]
 ```go
 sudo pmon2 show [id or name]
 ```
-![](https://jscssimg-img.oss-cn-beijing.aliyuncs.com/89c3f649a583a852.png)
+![](https://jscssimg-img.oss-cn-beijing.aliyuncs.com/89c3f649a583a852.png?t=1506950494)
 
 ## 常见问题
 
