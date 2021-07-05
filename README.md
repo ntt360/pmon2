@@ -31,20 +31,20 @@ Go官方一直没有提供任何进程管理工具，对于 `Go` 服务的部署
 #### CentOS6
 
 ```bash
-sudo yum install -y http://ntt360.com/rpms/pmon2-[current-version]-1.el6.x86_64.rpm
+sudo yum install -y https://rpm.ntt360.com/pmon2-[current-version]-1.el6.x86_64.rpm
 ```
 
 #### CentOS7
 
 ```bash
-sudo yum install -y http://ntt360.com/rpms/pmon2-[current-version]-1.el7.x86_64.rpm
+sudo yum install -y https://rpm.ntt360.com/pmon2-[current-version]-1.el7.x86_64.rpm
 ```
 
 ### 对于Debian/Ubuntu，需要下载deb包，使用dpkg进行安装
 
 #### Debian/Ubuntu
 ```bash
-sn=pmon2_[current-version]-1_amd64.deb && wget http://ntt360.com/debs/${sn} -O /tmp/${sn} && sudo dpkg -i /tmp/${sn}
+sn=pmon2_[current-version]-1_amd64.deb && wget http://rpm.ntt360.com/${sn} -O /tmp/${sn} && sudo dpkg -i /tmp/${sn}
 ```
 
 :exclamation::exclamation: **注意：** :exclamation::exclamation:
