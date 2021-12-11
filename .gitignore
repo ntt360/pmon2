@@ -18,4 +18,10 @@
 .idea
 bin
 
+.vscode
+
 config.dev.yml
+
+pmond
+worker
+pmon2

@@ -1,16 +1,17 @@
 package main
 
 import (
+	"os"
+
 	"github.com/ntt360/pmon2/app"
 	"github.com/ntt360/pmon2/app/model"
 	"github.com/ntt360/pmon2/app/utils/array"
-	"github.com/ntt360/pmon2/client/worker"
-	"os"
+	w "github.com/ntt360/pmon2/client/worker"
 )
 
 var cmdTypes = []string{"start", "restart"}
 
-func main() {
+func worker() {
 	args := os.Args
 
 	if len(args) <= 2 {
@@ -41,10 +42,10 @@ func main() {
 
 	switch typeCli {
 	case "start":
-		output, err = worker.Start(args[1], flagModel)
+		output, err = w.Start(args[1], flagModel)
 		break
 	case "restart":
-		output, err = worker.Restart(args[1], flagModel)
+		output, err = w.Restart(args[1], flagModel)
 		break
 	}
 

@@ -1,21 +1,17 @@
 package main
 
 import (
-	"flag"
 	"fmt"
-	"github.com/ntt360/pmon2/app"
-	"github.com/ntt360/pmon2/app/god"
-	"github.com/ntt360/pmon2/app/server"
 	"log"
 	"path"
 	"path/filepath"
+
+	"github.com/ntt360/pmon2/app"
+	"github.com/ntt360/pmon2/app/god"
+	"github.com/ntt360/pmon2/app/server"
 )
 
-func main() {
-	var config string
-	flag.StringVar(&config, "f", "/etc/pmon2/config/config.yml", "")
-	flag.Parse()
-
+func pmond() {
 	if !path.IsAbs(config) {
 		newConf, err := filepath.Abs(config)
 		config = newConf
