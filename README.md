@@ -22,7 +22,7 @@ Go官方一直没有提供任何进程管理工具，对于 `Go` 服务的部署
 
 ## 如何安装
 
-目前 `Pmon2` 支持 `CentOS6`、`CentOS7`、`CentOS8`、`Debian/Ubuntu`
+目前 `Pmon2` 支持 `CentOS6`、`CentOS7`、`CentOS8`
 
 [Releases](https://github.com/ntt360/pmon2/releases) 中已经构建了可以直接安装的`rpm`包，可直接选择平台安装： 
 
@@ -35,13 +35,6 @@ sudo yum install -y https://github.com/ntt360/pmon2/releases/download/v1.12.0/pm
 
 # CentOS8
 sudo yum install -y https://github.com/ntt360/pmon2/releases/download/v1.12.0/pmon2-1.12.0-1.el8.x86_64.rpm
-```
-
-### 对于Debian/Ubuntu，需要下载deb包，使用dpkg进行安装
-
-#### Debian/Ubuntu
-```bash
-sn=pmon2_[current-version]-1_amd64.deb && wget http://rpm.ntt360.com/${sn} -O /tmp/${sn} && sudo dpkg -i /tmp/${sn}
 ```
 
 :exclamation::exclamation: **注意：** :exclamation::exclamation:
@@ -193,7 +186,7 @@ pmon2 自带一个 `logrotate` 日志切割配置文件，会默认切割 `/var/
 
 ### 3. 平台支持
 
-目前 `rpm` 适配 `CentOS6` 、 `CentOS7` 和 `Debian/Ubuntu`， `Pmon2` 本身可运行在任何 `linux` 环境下，如有其它平台打包需求，请联系我们。
+目前 `rpm` 适配 `CentOS6` 、 `CentOS7`、`CentOS8`， `Pmon2` 本身可运行在任何 `linux` 环境下，如有其它平台打包需求，请联系我们。
 
 ### 4. 命令行自动补全
 
@@ -213,9 +206,6 @@ sudo initctl start pmon2
 
 # centos7 使用 systemd
 sudo systemctl start pmon2
-
-# Debian/Ubuntu
-sudo /usr/local/pmon2/bin/pmond &
 ```
 
 原因请参考，安装启动部分说明。
