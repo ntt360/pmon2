@@ -16,10 +16,8 @@ func DescTable(tbData [][]string) {
 			switch row[1] {
 			case "running":
 				table.Rich(row, []tablewriter.Colors{{}, {tablewriter.Bold, tablewriter.FgHiGreenColor}})
-				break
 			case "stopped":
 				table.Rich(row, []tablewriter.Colors{{}, {tablewriter.Bold, tablewriter.FgHiYellowColor}})
-				break
 			case "failed":
 				table.Rich(row, []tablewriter.Colors{{}, {tablewriter.Bold, tablewriter.FgRedColor}})
 			default:

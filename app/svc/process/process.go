@@ -7,6 +7,8 @@ import (
 	"github.com/ntt360/pmon2/app/model"
 	"github.com/ntt360/pmon2/client/proxy"
 	"os"
+	"os/exec"
+	"strconv"
 )
 
 func FindByProcessFile(pFile string) *model.Process {
@@ -26,6 +28,24 @@ func IsRunning(pid int) bool {
 	}
 
 	return true
+}
+
+func TryStop(forced bool, p *model.Process ) error {
+	var cmd *exec.Cmd
+	if forced {
+		cmd = exec.Command("kill", "-9", strconv.Itoa(p.Pid))
+	} else {
+		cmd = exec.Command("kill", strconv.Itoa(p.Pid))
+	}
+
+	err := cmd.Run()
+	if err != nil {
+		app.Log.Fatal(err)
+	}
+
+	p.Status = model.StatusStopped
+
+	return app.Db().Save(p).Error
 }
 
 func TryStart(m model.Process) ([]string, error) {

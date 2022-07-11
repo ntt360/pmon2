@@ -1,58 +1,50 @@
 package proxy
 
 import (
-	"errors"
+	"github.com/ntt360/errors"
 	"github.com/ntt360/pmon2/app"
-	"io/ioutil"
-	"os"
-	"strings"
-	"syscall"
+	conf2 "github.com/ntt360/pmon2/app/conf"
+	"github.com/ntt360/pmon2/app/model"
+	"github.com/ntt360/pmon2/app/utils/array"
+	"github.com/ntt360/pmon2/client/worker"
 )
 
+var cmdTypes = []string{"start", "restart"}
+
 func RunProcess(args []string) ([]byte, error) {
-	workerExec := strings.TrimRight(app.Config.Bin, "/") + "/worker"
-	_, err := os.Stat(workerExec)
-	if err != nil {
-		return nil, err
+	if len(args) <= 2 {
+		return nil, errors.New("process params not valid")
 	}
-
-	r, w, err := os.Pipe()
-	if err != nil {
-		return nil, err
-	}
-
-	worker, err := os.StartProcess(workerExec, args, &os.ProcAttr{
-		Dir: "/",
-		Env: append([]string{"PMON2_CONF=" + app.Config.Conf}, os.Environ()...),
-		Files: []*os.File{nil, w, w},
-		Sys: &syscall.SysProcAttr{
-			Setsid:     true,
-		},
-	})
+	conf := conf2.GetDefaultConf()
+	err := app.Instance(conf)
 
 	if err != nil {
 		return nil, err
 	}
+	// check run type param
+	typeCli := args[0]
 
-	workerState, err := worker.Wait()
+	if !array.In(cmdTypes, typeCli) {
+		return nil, errors.WithStack(err)
+	}
+
+	var output string
+
+	flagModel, err := model.ExecFlags{}.Parse(args[2])
 	if err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 
-	var data []byte
-	if workerState.Exited() {
-		_ = w.Close()
-		data, err = ioutil.ReadAll(r)
-		if err != nil {
-			_ = r.Close()
-			return nil, err
-		}
-
-		// run error msg
-		if workerState.ExitCode() >= 2 {
-			return nil, errors.New(string(data))
-		}
+	switch typeCli {
+	case "start":
+		output, err = worker.Start(args[1], flagModel)
+	case "restart":
+		output, err = worker.Restart(args[1], flagModel)
 	}
 
-	return data, nil
+	if err != nil {
+		return []byte(err.Error()), err
+	}
+
+	return []byte(output), nil
 }

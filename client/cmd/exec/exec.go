@@ -19,7 +19,6 @@ var Cmd = &cobra.Command{
 		if len(args) <= 0 {
 			app.Log.Fatal("porcess params is empty")
 		}
-
 		cmdRun(args, flag.Json())
 	},
 }
@@ -33,29 +32,28 @@ func init() {
 }
 
 func cmdRun(args []string, flags string) {
-	// get sock file conn to pmond
-	_, err := os.Stat(app.Config.Sock)
-	if os.IsNotExist(err) {
-		app.Log.Fatal(err)
-	}
-
 	// get exec abs file path
 	execPath, err := getExecFile(args)
 	if err != nil {
 		app.Log.Error(err.Error())
 		return
 	}
-
 	m, exist := processExist(execPath)
 	var rel []string
 	if exist {
+		app.Log.Debugf("restart process: %v", flags)
 		rel, err = restart(m, flags)
 	} else {
+		app.Log.Debugf("load first process: %v", flags)
 		rel, err = loadFirst(execPath, flags)
 	}
 
 	if err != nil {
-		app.Log.Fatal(err)
+		if len(os.Getenv("PMON2_DEBUG")) > 0 {
+			app.Log.Fatalf("%+v", err)
+		} else {
+			app.Log.Fatalf(err.Error())
+		}
 	}
 
 	output.TableOne(rel)

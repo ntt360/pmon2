@@ -6,10 +6,9 @@ import (
 	"github.com/ntt360/pmon2/app"
 	"github.com/ntt360/pmon2/app/model"
 	"github.com/ntt360/pmon2/app/output"
+	process2 "github.com/ntt360/pmon2/app/svc/process"
 	"github.com/spf13/cobra"
 	"os"
-	"os/exec"
-	"strconv"
 )
 
 var Cmd = &cobra.Command{
@@ -63,20 +62,8 @@ func cmdRun(args []string) {
 	}
 
 	// try to kill the process
-	var cmd *exec.Cmd
-	if forced {
-		cmd = exec.Command("kill", "-9", strconv.Itoa(process.Pid))
-	} else {
-		cmd = exec.Command("kill", strconv.Itoa(process.Pid))
-	}
-
-	err = cmd.Run()
+	err = process2.TryStop(forced, &process)
 	if err != nil {
-		app.Log.Fatal(err)
-	}
-
-	process.Status = model.StatusStopped
-	if app.Db().Save(&process).Error != nil {
 		app.Log.Fatalf("stop the process %s failed", val)
 	}
 

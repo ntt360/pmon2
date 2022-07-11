@@ -1,6 +1,7 @@
 package boot
 
 import (
+	"github.com/ntt360/errors"
 	"github.com/ntt360/pmon2/app/conf"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -9,7 +10,7 @@ import (
 func Conf(confFile string) (*conf.Tpl, error) {
 	d, err := ioutil.ReadFile(confFile)
 	if err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 
 	var c conf.Tpl

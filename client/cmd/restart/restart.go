@@ -1,4 +1,4 @@
-package start
+package restart
 
 import (
 	"fmt"
@@ -11,8 +11,8 @@ import (
 )
 
 var Cmd = &cobra.Command{
-	Use:   "start",
-	Short: "start some process by id or name",
+	Use:   "restart",
+	Short: "restart some process by id or name",
 	Run: func(cmd *cobra.Command, args []string) {
 		cmdRun(args)
 	},
@@ -20,7 +20,7 @@ var Cmd = &cobra.Command{
 
 func cmdRun(args []string) {
 	if len(args) == 0 {
-		app.Log.Fatal("please input start process id or name")
+		app.Log.Fatal("please input restart process id or name")
 	}
 
 	val := args[0]
@@ -31,12 +31,9 @@ func cmdRun(args []string) {
 
 	// checkout process state
 	if process.IsRunning(m.Pid) {
-		if m.Status != model.StatusRunning {
-			m.Status = model.StatusRunning
-			app.Db().Save(&m)
+		if err := process.TryStop(false, &m); err != nil {
+			app.Log.Fatalf("restart error: %s", err.Error())
 		}
-		output.TableOne(m.RenderTable())
-		return
 	}
 
 	rel, err := process.TryStart(m)

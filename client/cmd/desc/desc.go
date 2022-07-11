@@ -1,6 +1,7 @@
 package desc
 
 import (
+	"errors"
 	"github.com/jinzhu/gorm"
 	"github.com/ntt360/pmon2/app"
 	"github.com/ntt360/pmon2/app/model"
@@ -24,8 +25,8 @@ func cmdRun(args []string) {
 	var process model.Process
 	err := app.Db().Find(&process, "name = ? or id = ?", val, val).Error
 	if err != nil {
-		if err != gorm.ErrRecordNotFound {
-			app.Log.Fatal("pmon2 run err: %v", err)
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			app.Log.Fatalf("pmon2 run err: %v", err)
 		}
 
 		// not found

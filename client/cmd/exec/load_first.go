@@ -47,7 +47,7 @@ func getExecFile(args []string) (string, error) {
 
 	absPath, err := filepath.Abs(execFile)
 	if err != nil {
-		return "", fmt.Errorf("%s get file path error: %v", err.Error())
+		return "", fmt.Errorf("get file path error: %v", err.Error())
 	}
 
 	return absPath, nil

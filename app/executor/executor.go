@@ -1,6 +1,7 @@
 package executor
 
 import (
+	"github.com/ntt360/errors"
 	"github.com/ntt360/pmon2/app/model"
 	"github.com/ntt360/pmon2/app/utils/crypto"
 	"os"
@@ -42,7 +43,7 @@ func Exec(processFile, customLogFile, name, extArgs string, user *user.User, aut
 
 	process, err := os.StartProcess(processFile, processParams, attr)
 	if err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 
 	pModel := model.Process{

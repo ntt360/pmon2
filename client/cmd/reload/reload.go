@@ -1,15 +1,14 @@
 package reload
 
 import (
-	"context"
 	"fmt"
-	"github.com/goinbox/shell"
 	"github.com/ntt360/pmon2/app"
+	"github.com/ntt360/pmon2/app/god/proc"
 	"github.com/ntt360/pmon2/app/model"
 	"github.com/ntt360/pmon2/app/output"
 	"github.com/ntt360/pmon2/app/utils/array"
-	"github.com/ntt360/pmon2/app/utils/iconv"
 	"github.com/spf13/cobra"
+	"golang.org/x/net/context"
 	"os"
 	"strings"
 	"syscall"
@@ -33,12 +32,24 @@ func init() {
 }
 
 func cmdRun(args []string) {
+	// check user
+	uid := os.Geteuid()
+	if uid != 0 {
+		app.Log.Fatal("command need root or with sudo permission!")
+	}
+
 	// check flag
 	if len(sigFlag) > 0 {
 		if !array.In(signals, strings.ToUpper(sigFlag)) {
 			app.Log.Error("the signal only support: HUP，USR1，USR2")
 			return
 		}
+	}
+
+	nl, err := proc.DialPCNWithEvents([]proc.EventType{proc.ProcEventExit, proc.ProcEventFork})
+	if err != nil {
+		app.Log.Error(err)
+		return
 	}
 
 	processVal, err := argsValid(args)
@@ -49,23 +60,30 @@ func cmdRun(args []string) {
 	var process model.Process
 	err = app.Db().First(&process, "id = ? or name = ?", processVal, processVal).Error
 	if err != nil {
-		app.Log.Fatal("process not found: %s", processVal)
+		app.Log.Fatalf("process not found: %s", processVal)
+	}
+
+	// 验证进程id的状态
+	_, err = os.Stat(fmt.Sprintf("/proc/%d/status", process.Pid))
+	if os.IsNotExist(err) {
+		app.Log.Errorf("the process %s pid %d not running \n", process.Name, process.Pid)
+		return
 	}
 
 	// update db state
 	var oldState = process.Status
 	process.Status = model.StatusReload
-	if app.Db().Save(&process).Error != nil {
-		app.Log.Fatal(err)
+	if err = app.Db().Save(&process).Error; err != nil {
+		app.Log.Fatalf("try to set process %s state err: %s", processVal, err.Error())
 	}
 
 	_, err = os.Stat(fmt.Sprintf("/proc/%d/status", process.Pid))
 	if err == nil { // process exist
-		// kill process
 		p, _ := os.FindProcess(process.Pid)
-		err := p.Signal(getSignal())
+		err = p.Signal(getSignal())
+		app.Log.Debugf("send signal to process: %s", getSignal().String())
 		if err != nil {
-			app.Log.Fatal(err)
+			app.Log.Fatalf("try send signal to process err: %s", err)
 		}
 	}
 
@@ -73,41 +91,68 @@ func cmdRun(args []string) {
 	pidChannel := make(chan int, 1)
 	ctx, ctxCancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer ctxCancel()
-	go func(ctx context.Context) {
-		timer := time.NewTicker(time.Millisecond * 300)
-		defer timer.Stop()
-		for {
-			select {
-			case <-timer.C:
-				rel := shell.RunCmd(fmt.Sprintf("ps -ef | grep '%s ' | grep -v grep | awk '{print $2}'", process.ProcessFile))
-				if rel.Ok {
-					newPidStr := strings.TrimSpace(string(rel.Output))
-					newPid := iconv.MustInt(newPidStr)
-					if newPid != 0 && newPid != process.Pid {
-						pidChannel <- newPid
-						return
+	go func() {
+		go func() {
+			var rel = make(map[string]uint32)
+			for {
+				event, err := nl.ReadPCN()
+				if err != nil {
+					continue
+				}
+				for _, procEvent := range event {
+					switch procEvent.What {
+					case proc.ProcEventExit:
+						if procEvent.EventData.Tgid() != uint32(process.Pid) {
+							continue
+						}
+						rel["exist"] = procEvent.EventData.Tgid()
+					case proc.ProcEventFork:
+						f := procEvent.EventData.(proc.Fork)
+						if f.ParentTgid == uint32(process.Pid) {
+							rel["fork"] = f.ParentPid
+							rel["new_pid"] = f.ChildPid
+						}
 					}
 				}
-			case <-ctx.Done():
-				pidChannel <- -1
+
+				_, ok := rel["exist"]
+				if !ok {
+					continue
+				}
+
+				_, ok = rel["fork"]
+				if !ok {
+					continue
+				}
+
+				// 平滑重启需要保证子进程重启，且父进程退出
+				pidChannel <- int(rel["new_pid"])
+				_ = nl.ClosePCN()
+				break
 			}
-		}
-	}(ctx)
+		}()
+
+		<-ctx.Done()
+		_ = nl.ClosePCN()
+		pidChannel <- -1
+	}()
 
 	newPid := <-pidChannel
 	if newPid > 0 { // 进程重启成功
+		app.Log.Debugf("reload success process id: %d", newPid)
+		process.Pid = newPid
 		process.Status = model.StatusRunning
 		if err = app.Db().Save(&process).Error; err != nil {
-			app.Log.Fatal(err)
+			app.Log.Fatalf("try to update process %s state err %s", processVal, err.Error())
 		}
 		output.TableOne(process.RenderTable())
-	} else {
-		process.Status = oldState
+	} else { // 重启失败，db数据还原
+		app.Log.Debugf("reload failed, roll process status: %s", oldState)
+		process.Status = model.StatusFailed
 		if err = app.Db().Save(&process).Error; err != nil {
-			app.Log.Fatal(err)
+			app.Log.Fatalf("reloadl failed, try rollback process err: %s", err.Error())
 		}
-
-		app.Log.Fatal(fmt.Printf("process %s reload failed", processVal))
+		app.Log.Fatalf("process %s reload failed", processVal)
 	}
 }
 

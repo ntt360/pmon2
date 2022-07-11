@@ -1,6 +1,7 @@
 package executor
 
 import (
+	"github.com/ntt360/errors"
 	"github.com/ntt360/pmon2/app"
 	"os"
 	"strings"
@@ -16,7 +17,7 @@ func getLogPath(customLogFile string, hash string) (string, error) {
 		if os.IsNotExist(err) {
 			err := os.MkdirAll(prjDir, 0755)
 			if err != nil {
-				return "", err
+				return "", errors.Wrapf(err, "err: %s, logs dir: '%s'", err.Error(), prjDir)
 			}
 		}
 		customLogFile = prjDir + "/" + hash + logSuffix
@@ -29,7 +30,7 @@ func getLogFile(customLogFile string) (*os.File, error) {
 	// 创建进程日志文件
 	logFile, err := os.OpenFile(customLogFile, syscall.O_CREAT|syscall.O_APPEND|syscall.O_WRONLY, 0755)
 	if err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 
 	return logFile, nil

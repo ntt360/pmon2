@@ -2,47 +2,28 @@ package service
 
 import (
 	"encoding/json"
-	"errors"
+	"fmt"
+	"github.com/ntt360/pmon2/app"
 	"github.com/ntt360/pmon2/app/model"
-	"github.com/ntt360/pmon2/client/sock"
 )
 
 func AddData(process *model.Process) (string, error) {
-	conn, err := sock.GetConn()
+	// save to db
+	var originOne model.Process
+	err := app.Db().First(&originOne, "process_file = ?", process.ProcessFile).Error
+	if err == nil && originOne.ID > 0 { // process already exist
+		process.ID = originOne.ID
+	}
+
+	err = app.Db().Save(&process).Error
 	if err != nil {
-		return "", err
-	}
-	defer conn.Close()
-
-	p := model.Package{
-		Cmd:  model.CmdStart,
-		Data: process.MustJson(),
+		return "", fmt.Errorf("pmon2 run err: %w", err)
 	}
 
-	msg := p.MustToJson()
-	_, err = conn.Write(msg)
-	if err != nil {
-		return "", err
-	}
-
-	rspData, err := validRspData(sock.ReadData(conn))
+	output, err := json.Marshal(process.RenderTable())
 	if err != nil {
 		return "", err
 	}
 
-	return rspData.Data, nil
-}
-
-func validRspData(relData string) (*model.Rsp, error) {
-	var rel model.Rsp
-	err := json.Unmarshal([]byte(relData), &rel)
-	if err != nil {
-		return nil, err
-	}
-
-	if rel.Code == 0 {
-		return &rel, nil
-	}
-
-	return nil, errors.New(rel.Msg)
+	return string(output), nil
 }

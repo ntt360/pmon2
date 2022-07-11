@@ -6,13 +6,12 @@ import (
 	"github.com/ntt360/pmon2/app"
 	"github.com/ntt360/pmon2/app/executor"
 	"github.com/ntt360/pmon2/app/model"
-	process2 "github.com/ntt360/pmon2/app/svc/process"
 	"github.com/ntt360/pmon2/client/service"
 	"time"
 )
 
 func Restart(pFile string, flags *model.ExecFlags) (string, error) {
-	m := process2.FindByProcessFile(pFile)
+	m := FindByProcessFile(pFile)
 	if m == nil {
 		return "", errors.New("try to get process data error")
 	}
@@ -40,7 +39,7 @@ func Restart(pFile string, flags *model.ExecFlags) (string, error) {
 	// get run process user
 	runUser, err := GetProcUser(flags)
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 
 	process, err := executor.Exec(m.ProcessFile, m.Log, m.Name, m.Args, runUser, !flags.NoAutoRestart)
@@ -56,4 +55,14 @@ func Restart(pFile string, flags *model.ExecFlags) (string, error) {
 	waitData := service.NewProcStat(process).Wait()
 
 	return service.AddData(waitData)
+}
+
+func FindByProcessFile(pFile string) *model.Process {
+	var rel model.Process
+	err := app.Db().First(&rel, "process_file = ?", pFile).Error
+	if err != nil {
+		return nil
+	}
+
+	return &rel
 }

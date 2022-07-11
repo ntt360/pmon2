@@ -18,12 +18,17 @@ var db *gorm.DB
 
 func init() {
 	Log = logrus.New()
-	Log.SetLevel(logrus.InfoLevel)
+	if os.Getenv("PMON2_DEBUG") == "true" {
+		Log.SetLevel(logrus.DebugLevel)
+		Log.SetReportCaller(true)
+	} else {
+		Log.SetLevel(logrus.InfoLevel)
+	}
 	Log.SetOutput(os.Stdout)
 	Log.SetFormatter(&logrus.TextFormatter{
 		DisableTimestamp: true,
 	})
-	//Log.SetReportCaller(true)
+
 }
 
 func Instance(confDir string) error {

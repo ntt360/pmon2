@@ -89,6 +89,8 @@ Available Commands:
   reload      reload some process
   start       start some process by id or name
   stop        stop running process
+  log         display process log by id or name
+  logf        display process log dynamic by id or name
   version     show pmon2 version
 ```
 
@@ -148,6 +150,16 @@ sudo pmon2 stop [id or name]
 
 ```go
 sudo pmon2 reload [id or name]
+```
+
+#### 插件进程日志
+
+```shell
+# 查看最近进程的日志
+sudo pmon2 log [id or name]
+
+# 动态查看进程日志，类似系统tail -f xxx.log
+sudo pmon2 logf [id or name]
 ```
 
 仅仅重启配置文件，该命令需要所启动的进程配合使用，`reload` 命令默认仅仅发送 `SIGUSR2` 信号给启动的进程

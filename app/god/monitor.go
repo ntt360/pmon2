@@ -18,16 +18,14 @@ type Monitor struct {
 }
 
 func NewMonitor() {
-	go runMonitor()
+	runMonitor()
 }
 
 func runMonitor() {
 	timer := time.NewTicker(time.Millisecond * 500)
 	for {
-		select {
-		case <-timer.C:
-			runningTask()
-		}
+		<-timer.C
+		runningTask()
 	}
 }
 
@@ -35,29 +33,43 @@ var pendingTask sync.Map
 
 func runningTask() {
 	var all []model.Process
-	err := app.Db().Find(&all).Error
+	err := app.Db().Find(&all, "status = ? or status = ?", model.StatusRunning, model.StatusFailed).Error
 	if err != nil {
 		return
 	}
 
 	for _, process := range all {
-		if process.Status == model.StatusStopped || process.Status == model.StatusReload || process.Status == model.StatusInit {
-			// state no need restart
-			continue
-		}
-
+		// just check failed process
 		key := "process_id:" + strconv.Itoa(int(process.ID))
 		_, ok := pendingTask.LoadOrStore(key, process.ID)
 		if ok {
-			// start process already running
-			continue
+			return
 		}
 
-		// just check failed process
-		go func(p model.Process) {
-			_ = restartProcess(p)
-			pendingTask.Delete(key)
-		}(process)
+		go func(p model.Process, key string) {
+			var cur model.Process
+			defer func() {
+				pendingTask.Delete(key)
+			}()
+			err = app.Db().First(&cur, p.ID).Error
+			if err != nil {
+				return
+			}
+
+			if cur.Status != model.StatusRunning && cur.Status != model.StatusFailed {
+				return
+			}
+
+			// 启动大于5秒后的进程才进行检查
+			if time.Since(cur.UpdatedAt).Seconds() <= 5 {
+				return
+			}
+
+			err = restartProcess(p)
+			if err != nil {
+				app.Log.Error(err)
+			}
+		}(process, key)
 	}
 }
 
@@ -71,11 +83,7 @@ func checkFork(process model.Process) bool {
 		if newPid != 0 && newPid != process.Pid {
 			process.Pid = newPid
 			process.Status = model.StatusRunning
-			if app.Db().Save(&process).Error != nil {
-				return false
-			}
-
-			return true
+			return app.Db().Save(&process).Error == nil
 		}
 	}
 
@@ -83,13 +91,16 @@ func checkFork(process model.Process) bool {
 }
 
 func restartProcess(p model.Process) error {
+	//fmt.Printf("Monitor: try get process (%d) status \n", p.Pid)
 	_, err := os.Stat(fmt.Sprintf("/proc/%d/status", p.Pid))
 	if err == nil { // process already running
+		//fmt.Printf("Monitor: process (%d) already running \n", p.Pid)
 		return nil
 	}
 
 	// proc status file not exit
 	if os.IsNotExist(err) && (p.Status == model.StatusRunning || p.Status == model.StatusFailed) {
+		//fmt.Printf("Monitor: process not exist %s \n", p.Status)
 		if checkFork(p) {
 			return nil
 		}
@@ -103,6 +114,7 @@ func restartProcess(p model.Process) error {
 			return nil
 		}
 
+		//fmt.Printf("try to restart process %d \n", p.Pid)
 		_, err := process2.TryStart(p)
 		if err != nil {
 			return err
