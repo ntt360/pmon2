@@ -1,5 +1,5 @@
 # pmon2
-golang进程管理工具(golang process manager)，专门用于 go 常驻进程管理 （daemon manager）
+go进程管理工具(golang process manager)，专门用于 go 常驻进程管理 （daemon manager）
 
 <img src="http://p0.qhimg.com/t017d6cbb68aed4b693.png" style="max-width:680px" />
 
@@ -17,27 +17,24 @@ Go官方一直没有提供任何进程管理工具，对于 `Go` 服务的部署
 
 和 `pm2` 不一样的是，`pmon2` 直接是启动的系统级常驻进程。进程直接由 `init` 来管理，因此，就算`pmon2`管理工具异常退出，也不会影响进程本身运行。
 
-默认的，`pmon2` 所管理的进程如果发生异常崩溃，`pmon2` 也会尝试自动重启该进程。如果你不希望某个进程自动重启，那么你可以设置一个 `--no-autorestart` 参数即可。具体请参考：常用命令使用章节。
-
-关于 `Pmon2` 的诞生，欢迎阅读：[go进程管理工具Pmon2实践](https://gofr.co/article/golang-process-manager-tool-pmon2)
+默认的，`pmon2` 所管理的进程如果发生异常崩溃，`pmon2` 会尝试重启该进程。如果你不希望某个进程自动重启，那么你可以设置一个 `--no-autorestart` 参数即可。具体请参考：常用命令使用章节。
 
 
 ## 如何安装
 
-目前 `Pmon2` 支持 `CentOS6`、`CentOS7`、`Debian/Ubuntu`
+目前 `Pmon2` 支持 `CentOS6`、`CentOS7`、`CentOS8`、`Debian/Ubuntu`
 
-### 对于RedHat系列，直接安装对应版本的rpm包即可
-
-#### CentOS6
+[Releases](https://github.com/ntt360/pmon2/releases) 中已经构建了可以直接安装的`rpm`包，可直接选择平台安装： 
 
 ```bash
-sudo yum install -y https://rpm.ntt360.com/pmon2-[current-version]-1.el6.x86_64.rpm
-```
+# CentOS6
+sudo yum install -y https://github.com/ntt360/pmon2/releases/download/v1.12.0/pmon2-1.12.0-1.el6.x86_64.rpm
 
-#### CentOS7
+# CentOS7
+sudo yum install -y https://github.com/ntt360/pmon2/releases/download/v1.12.0/pmon2-1.12.0-1.el7.x86_64.rpm
 
-```bash
-sudo yum install -y https://rpm.ntt360.com/pmon2-[current-version]-1.el7.x86_64.rpm
+# CentOS8
+sudo yum install -y https://github.com/ntt360/pmon2/releases/download/v1.12.0/pmon2-1.12.0-1.el8.x86_64.rpm
 ```
 
 ### 对于Debian/Ubuntu，需要下载deb包，使用dpkg进行安装
