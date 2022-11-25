@@ -24,7 +24,9 @@ func Exec(processFile, customLogFile, name, extArgs string, user *user.User, aut
 	uid, _ := strconv.Atoi(user.Uid)
 	gid, _ := strconv.Atoi(user.Gid)
 
+	lastSepIdx := strings.LastIndex(processFile, string(os.PathSeparator))
 	attr := &os.ProcAttr{
+		Dir:   processFile[0 : lastSepIdx+1],
 		Env:   os.Environ(),
 		Files: []*os.File{nil, logOutput, logOutput},
 		Sys: &syscall.SysProcAttr{
