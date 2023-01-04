@@ -34,7 +34,7 @@ func Start(processFile string, flags *model.ExecFlags) (string, error) {
 		return "", errors.Errorf("process name: %s already exist, please set other name by --name", name)
 	}
 	// start process
-	process, err := executor.Exec(processFile, flags.Log, name, flags.Args, runUser, !flags.NoAutoRestart)
+	process, err := executor.Exec(processFile, flags.Log, name, flags.Args, runUser, !flags.NoAutoRestart, flags.LogDir)
 	if err != nil {
 		return "", err
 	}

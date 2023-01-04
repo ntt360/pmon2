@@ -11,16 +11,6 @@ import (
 	"strconv"
 )
 
-func FindByProcessFile(pFile string) *model.Process {
-	var rel model.Process
-	err := app.Db().First(&rel, "process_file = ?", pFile).Error
-	if err != nil {
-		return nil
-	}
-
-	return &rel
-}
-
 func IsRunning(pid int) bool {
 	_, err := os.Stat(fmt.Sprintf("/proc/%d/status", pid))
 	if err != nil {
@@ -30,7 +20,7 @@ func IsRunning(pid int) bool {
 	return true
 }
 
-func TryStop(forced bool, p *model.Process ) error {
+func TryStop(forced bool, p *model.Process) error {
 	var cmd *exec.Cmd
 	if forced {
 		cmd = exec.Command("kill", "-9", strconv.Itoa(p.Pid))
@@ -48,13 +38,32 @@ func TryStop(forced bool, p *model.Process ) error {
 	return app.Db().Save(p).Error
 }
 
-func TryStart(m model.Process) ([]string, error) {
+func TryStart(m model.Process, flags string) ([]string, error) {
 	var flagsModel = model.ExecFlags{
 		User:          m.Username,
 		Log:           m.Log,
 		NoAutoRestart: !m.AutoRestart,
 		Args:          m.Args,
 		Name:          m.Name,
+	}
+
+	if len(flags) > 0 {
+		app.Log.Debugf("start with flags: %s \n", flags)
+		execFlags := model.ExecFlags{}
+		curFlag, err := execFlags.Parse(flags)
+		if err != nil {
+			return nil, err
+		}
+
+		if len(curFlag.Log) > 0 {
+			flagsModel.Log = curFlag.Log
+		}
+
+		// log dir
+		if len(curFlag.LogDir) > 0 && len(curFlag.Log) == 0 {
+			flagsModel.LogDir = curFlag.LogDir
+			flagsModel.Log = ""
+		}
 	}
 
 	data, err := proxy.RunProcess([]string{"restart", m.ProcessFile, flagsModel.Json()})

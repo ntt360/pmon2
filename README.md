@@ -28,13 +28,13 @@ Go官方一直没有提供任何进程管理工具，对于 `Go` 服务的部署
 
 ```bash
 # CentOS6
-sudo yum install -y https://github.com/ntt360/pmon2/releases/download/v1.12.0/pmon2-1.12.0-1.el6.x86_64.rpm
+sudo yum install -y https://github.com/ntt360/pmon2/releases/download/v1.12.0/pmon2-1.12.1-1.el6.x86_64.rpm
 
 # CentOS7
-sudo yum install -y https://github.com/ntt360/pmon2/releases/download/v1.12.0/pmon2-1.12.0-1.el7.x86_64.rpm
+sudo yum install -y https://github.com/ntt360/pmon2/releases/download/v1.12.0/pmon2-1.12.1-1.el7.x86_64.rpm
 
 # CentOS8
-sudo yum install -y https://github.com/ntt360/pmon2/releases/download/v1.12.0/pmon2-1.12.0-1.el8.x86_64.rpm
+sudo yum install -y https://github.com/ntt360/pmon2/releases/download/v1.12.0/pmon2-1.12.1-1.el8.x86_64.rpm
 ```
 
 :exclamation::exclamation: **注意：** :exclamation::exclamation:
@@ -97,6 +97,9 @@ sudo pmon2 run [./二进制文件名] [参数1] [参数2] ...
 
 // 进程运行日志，不配置则使用默认路径：/var/log/pmon2/
 --log   -l
+
+// 仅自定义日志目录，优先级低于 --log
+--log_dir -d
 
 // 进程自定义参数，多个参数以空格分割
 --args  -a "-arg1=val1 -arg2=val2"

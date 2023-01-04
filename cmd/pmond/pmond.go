@@ -14,6 +14,8 @@ func main() {
 		log.Fatal(err)
 	}
 
+	log.Printf("pmon2 daemon is running! \n")
+
 	// start monitor process file
 	god.NewMonitor()
 }

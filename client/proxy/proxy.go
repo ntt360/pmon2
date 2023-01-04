@@ -30,7 +30,8 @@ func RunProcess(args []string) ([]byte, error) {
 
 	var output string
 
-	flagModel, err := model.ExecFlags{}.Parse(args[2])
+	flags := model.ExecFlags{}
+	flagModel, err := flags.Parse(args[2])
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
