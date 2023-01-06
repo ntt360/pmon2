@@ -10,8 +10,13 @@ import (
 
 const logSuffix = ".log"
 
-func getLogPath(customLogFile string, hash string) (string, error) {
-	prjDir := strings.TrimRight(app.Config.GetLogsDir(), "/")
+func getLogPath(customLogFile string, hash string, logDir string) (string, error) {
+	if len(logDir) <= 0 {
+		app.Log.Debugf("custom log dir: %s \n", logDir)
+		logDir = app.Config.GetLogsDir()
+	}
+
+	prjDir := strings.TrimRight(logDir, "/")
 	if len(customLogFile) <= 0 {
 		_, err := os.Stat(prjDir)
 		if os.IsNotExist(err) {
@@ -22,6 +27,8 @@ func getLogPath(customLogFile string, hash string) (string, error) {
 		}
 		customLogFile = prjDir + "/" + hash + logSuffix
 	}
+
+	app.Log.Debugf("log file is: %s \n", customLogFile)
 
 	return customLogFile, nil
 }

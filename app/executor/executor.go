@@ -11,8 +11,8 @@ import (
 	"syscall"
 )
 
-func Exec(processFile, customLogFile, name, extArgs string, user *user.User, autoRestart bool) (*model.Process, error) {
-	logPath, err := getLogPath(customLogFile, crypto.Crc32Hash(processFile))
+func Exec(processFile, customLogFile, name, extArgs string, user *user.User, autoRestart bool, logDir string) (*model.Process, error) {
+	logPath, err := getLogPath(customLogFile, crypto.Crc32Hash(processFile), logDir)
 	if err != nil {
 		return nil, err
 	}

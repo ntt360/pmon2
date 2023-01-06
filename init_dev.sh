@@ -8,7 +8,7 @@ set -e
 
 rootDir=$(cd "$(dirname "$0")"; pwd)
 
-rm -rf "$rootDir/config/config-dev.yml"
+sudo rm -rf "$rootDir/config/config-dev.yml" "$rootDir/tmp"
 
 # 写配置
 cd "config"
@@ -30,6 +30,7 @@ fi
 mkdir -p "$logs"
 
 # build go bin
+go mod tidy
 go build -o bin/pmon2 cmd/pmon2/pmon2.go
 go build -o bin/pmond cmd/pmond/pmond.go
 # `bin/test` 进程是用于测试模拟的业务进程，开发也可以测试自己的业务进程。

@@ -21,6 +21,11 @@ func Restart(pFile string, flags *model.ExecFlags) (string, error) {
 		m.Log = cstLog
 	}
 
+	// if reset log dir
+	if len(flags.LogDir) > 0 && len(flags.Log) == 0 {
+		m.Log = ""
+	}
+
 	cstName := flags.Name
 	if len(cstName) > 0 && cstName != m.Name {
 		m.Name = cstName
@@ -42,7 +47,7 @@ func Restart(pFile string, flags *model.ExecFlags) (string, error) {
 		return "", err
 	}
 
-	process, err := executor.Exec(m.ProcessFile, m.Log, m.Name, m.Args, runUser, !flags.NoAutoRestart)
+	process, err := executor.Exec(m.ProcessFile, m.Log, m.Name, m.Args, runUser, !flags.NoAutoRestart, flags.LogDir)
 	if err != nil {
 		return "", err
 	}

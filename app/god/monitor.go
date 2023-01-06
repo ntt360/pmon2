@@ -91,7 +91,6 @@ func checkFork(process model.Process) bool {
 }
 
 func restartProcess(p model.Process) error {
-	//fmt.Printf("Monitor: try get process (%d) status \n", p.Pid)
 	_, err := os.Stat(fmt.Sprintf("/proc/%d/status", p.Pid))
 	if err == nil { // process already running
 		//fmt.Printf("Monitor: process (%d) already running \n", p.Pid)
@@ -100,7 +99,6 @@ func restartProcess(p model.Process) error {
 
 	// proc status file not exit
 	if os.IsNotExist(err) && (p.Status == model.StatusRunning || p.Status == model.StatusFailed) {
-		//fmt.Printf("Monitor: process not exist %s \n", p.Status)
 		if checkFork(p) {
 			return nil
 		}
@@ -114,8 +112,7 @@ func restartProcess(p model.Process) error {
 			return nil
 		}
 
-		//fmt.Printf("try to restart process %d \n", p.Pid)
-		_, err := process2.TryStart(p)
+		_, err := process2.TryStart(p, "")
 		if err != nil {
 			return err
 		}

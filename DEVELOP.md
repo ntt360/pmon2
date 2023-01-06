@@ -11,8 +11,8 @@ sh init_dev.sh
 ## 测试开发
 
 ```shell
-sudo PMON2_CONF=config/config-dev.yml ./bin/pmond
-sudo PMON2_CONF=config/config-dev.yml ./bin/pmon2 exec bin/test 
+sudo PMON2_DEBUG=true PMON2_CONF=config/config-dev.yml ./bin/pmond
+sudo PMON2_DEBUG=true PMON2_CONF=config/config-dev.yml ./bin/pmon2 exec bin/test 
 ```
 
 因为 `pmon2` 启动进程使用的是fork/exec,所以需要sudo或root级别权限。

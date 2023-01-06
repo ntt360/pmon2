@@ -5,12 +5,13 @@ import "encoding/json"
 type ExecFlags struct {
 	User          string `json:"user"`
 	Log           string `json:"log"`
+	LogDir        string `json:"log_dir"`
 	NoAutoRestart bool   `json:"no_auto_restart"`
 	Args          string `json:"args"`
 	Name          string `json:"name"`
 }
 
-func (ExecFlags) Parse(jsonStr string) (*ExecFlags, error) {
+func (e *ExecFlags) Parse(jsonStr string) (*ExecFlags, error) {
 	var m ExecFlags
 	err := json.Unmarshal([]byte(jsonStr), &m)
 	if err != nil {
