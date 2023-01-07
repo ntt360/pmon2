@@ -2,15 +2,11 @@ package proc
 
 import (
 	"encoding/binary"
-	"fmt"
-
 	"github.com/mdlayher/netlink/nlenc"
 	"golang.org/x/net/bpf"
 )
 
 func loadBPF(filters []EventType) ([]bpf.RawInstruction, error) {
-
-	fmt.Printf("Filter List: %#v\n", filters)
 	var totals uint32
 	for _, toFilter := range filters {
 		totals = totals | uint32(toFilter)
