@@ -19,3 +19,7 @@
 bin
 
 config.dev.yml
+tmp/logs/*.log
+tmp/data/db/data.db
+config/config-dev.yml
+.vscode/*

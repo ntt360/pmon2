@@ -21,5 +21,5 @@ func getBoottime() (int64, error) {
 		return 0, err
 	}
 
-	return (tv.Sec - info.Uptime), nil
+	return int64(tv.Sec - info.Uptime), nil
 }

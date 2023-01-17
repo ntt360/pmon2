@@ -1,0 +1,89 @@
+env:
+  - GO111MODULE=on
+before:
+  hooks:
+    - go mod tidy
+builds:
+
+  - id: pmon2
+    env:
+      - CGO_ENABLED=0
+      - GO111MODULE=on
+    goos:
+      - linux
+    goarch:
+      - 386
+      - amd64
+      - arm
+      - arm64
+    goarm:
+      - 7
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    main: ./cmd/pmon2/pmon2.go
+    flags:
+      - -trimpath
+#    ldflags:
+
+  - id: pmond
+    env:
+      - CGO_ENABLED=0
+      - GO111MODULE=on
+    goos:
+      - linux
+    goarch:
+      - 386
+      - amd64
+      - arm
+      - arm64
+    goarm:
+      - 7
+    binary: "pmond"
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    main: ./cmd/pmond/pmond.go
+    flags:
+      - -trimpath
+#    ldflags:
+
+checksum:
+  name_template: "{{ .ProjectName }}_checksums.txt"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - fix typo
+      - Merge pull request
+      - Merge branch
+      - Merge remote-tracking
+      - go mod tidy
+
+
+
+archives:
+  - id: pmon2
+    builds:
+      - pmon2
+    name_template: "{{ .Binary }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+
+
+
+  - id: pmond
+    builds:
+      - pmond
+    name_template: "{{ .Binary }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+    files:
+      - config/config.yml
+      - service/centos7/pmon2.service
+
+
+nfpms:
+  - license: AGPL 3.0
+    homepage: https://github.com/ntt360/pmon2
+    file_name_template: "pmond_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    formats:
+      - deb
+      - rpm
+    maintainer: ntt360
+    builds:
+      - pmond

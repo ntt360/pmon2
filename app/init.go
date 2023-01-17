@@ -1,14 +1,15 @@
 package app
 
 import (
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"os"
+	"sync"
+
+	"github.com/glebarez/sqlite"
 	"github.com/ntt360/pmon2/app/boot"
 	"github.com/ntt360/pmon2/app/conf"
 	"github.com/ntt360/pmon2/app/model"
 	"github.com/sirupsen/logrus"
-	"os"
-	"sync"
+	"gorm.io/gorm"
 )
 
 var Log *logrus.Logger
@@ -28,7 +29,6 @@ func init() {
 	Log.SetFormatter(&logrus.TextFormatter{
 		DisableTimestamp: true,
 	})
-
 }
 
 func Instance(confDir string) error {
@@ -53,19 +53,19 @@ func Db() *gorm.DB {
 			}
 		}
 
-		initDb, err := gorm.Open("sqlite3", appDbDir+"/data.db")
+		initDb, err := gorm.Open(sqlite.Open(appDbDir+"/data.db"), &gorm.Config{})
 		if err != nil {
 			panic(err)
 		}
 		db = initDb
 
 		// init table
-		if !db.HasTable(&model.Process{}) {
-			db.CreateTable(&model.Process{})
+		if !db.Migrator().HasTable(&model.Process{}) {
+			db.Migrator().CreateTable(&model.Process{})
 		}
 
-		if !db.HasTable(&model.App{}) {
-			db.CreateTable(&model.App{})
+		if !db.Migrator().HasTable(&model.App{}) {
+			db.Migrator().CreateTable(&model.App{})
 		}
 
 		// sync data
