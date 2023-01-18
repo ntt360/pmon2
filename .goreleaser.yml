@@ -75,15 +75,81 @@ archives:
     files:
       - config/config.yml
       - service/centos7/pmon2.service
+      - service/centos6/*.conf
+      - logrotate/pmon2
+      - auto-complete/bash/pmon2.sh
 
 
 nfpms:
-  - license: AGPL 3.0
+  - id: "other_linux"
+    license: AGPL 3.0
     homepage: https://github.com/ntt360/pmon2
-    file_name_template: "pmond_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     formats:
       - deb
       - rpm
     maintainer: ntt360
+    bindir: /usr/local/pmon2/bin
     builds:
       - pmond
+      - pmon2
+    replacements:
+      amd64: x86-64
+      386: x86_32
+
+    empty_folders:
+      - /etc/pmon2/
+      - /etc/pmon2/config/
+      - /usr/local/pmon2/bin
+      - /usr/local/pmon2/service/centos6/
+      - /usr/local/pmon2/service/centos7/
+      - /usr/local/pmon2/auto-complete/bash/
+      - /usr/local/pmon2/logrotate/
+    files:
+      "auto-complete/bash/pmon2.sh": "/usr/local/pmon2/auto-complete/bash/pmon2.sh"
+      "service/centos6/*.conf": "/usr/local/pmon2/service/centos6/"
+      "service/centos7/pmon2.service": "/usr/local/pmon2/service/centos7/pmon2.service"
+      "logrotate/pmon2": "/usr/local/pmon2/logrotate/pmon2"
+    config_files:
+      "config/config.yml": "/etc/pmon2/config/config.yml"
+
+    scripts:
+#      执行不同的安装文件
+      postinstall: "auto-complete/scripts/other_install.sh"
+      postremove: "auto-complete/scripts/uninstall.sh"
+
+  - id: "centos6"
+    license: AGPL 3.0
+    homepage: https://github.com/ntt360/pmon2
+    file_name_template: "{{ .ProjectName }}_{{ .Version }}_centos6_{{ .Arch }}"
+    formats:
+      - rpm
+    maintainer: ntt360
+    bindir: /usr/local/pmon2/bin
+    builds:
+      - pmond
+      - pmon2
+    replacements:
+      amd64: x86-64
+      386: x86_32
+
+    empty_folders:
+      - /etc/pmon2/
+      - /etc/pmon2/config/
+      - /usr/local/pmon2/bin
+      - /usr/local/pmon2/service/centos6/
+      - /usr/local/pmon2/service/centos7/
+      - /usr/local/pmon2/auto-complete/bash/
+      - /usr/local/pmon2/logrotate/
+    files:
+      "auto-complete/bash/pmon2.sh": "/usr/local/pmon2/auto-complete/bash/pmon2.sh"
+      "service/centos6/*.conf": "/usr/local/pmon2/service/centos6/"
+      "service/centos7/pmon2.service": "/usr/local/pmon2/service/centos7/pmon2.service"
+      "logrotate/pmon2": "/usr/local/pmon2/logrotate/pmon2"
+    config_files:
+      "config/config.yml": "/etc/pmon2/config/config.yml"
+    scripts:
+#      执行不同的安装文件
+      postinstall: "auto-complete/scripts/centos6_install.sh"
+      postremove: "auto-complete/scripts/uninstall.sh"
+
