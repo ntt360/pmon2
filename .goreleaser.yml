@@ -96,22 +96,32 @@ nfpms:
     replacements:
       amd64: x86-64
       386: x86_32
+    contents:
+      -
+        src: "auto-complete/bash/pmon2.sh"
+        dst: "/usr/local/pmon2/auto-complete/bash/pmon2.sh"
+        file_info:
+          mode: 644
+      -
+        src: "service/centos6/*.conf"
+        dst: "/usr/local/pmon2/service/centos6/"
+        file_info:
+          mode: 644
+      -
+        src: "service/centos7/pmon2.service"
+        dst: "/usr/local/pmon2/service/centos7/pmon2.service"
+      -
+        src: "logrotate/pmon2"
+        dst: "/usr/local/pmon2/logrotate/pmon2"
+      -
+        src: "config/config.yml"
+        dst: "/etc/pmon2/config/config.yml"
+        type: config
+      -
+        src: "/usr/local/pmon2/bin/pmon2"
+        dst: "/usr/bin/pmon2"
+        type: symlink
 
-    empty_folders:
-      - /etc/pmon2/
-      - /etc/pmon2/config/
-      - /usr/local/pmon2/bin
-      - /usr/local/pmon2/service/centos6/
-      - /usr/local/pmon2/service/centos7/
-      - /usr/local/pmon2/auto-complete/bash/
-      - /usr/local/pmon2/logrotate/
-    files:
-      "auto-complete/bash/pmon2.sh": "/usr/local/pmon2/auto-complete/bash/pmon2.sh"
-      "service/centos6/*.conf": "/usr/local/pmon2/service/centos6/"
-      "service/centos7/pmon2.service": "/usr/local/pmon2/service/centos7/pmon2.service"
-      "logrotate/pmon2": "/usr/local/pmon2/logrotate/pmon2"
-    config_files:
-      "config/config.yml": "/etc/pmon2/config/config.yml"
 
     scripts:
 #      执行不同的安装文件
@@ -132,24 +142,30 @@ nfpms:
     replacements:
       amd64: x86-64
       386: x86_32
-
-    empty_folders:
-      - /etc/pmon2/
-      - /etc/pmon2/config/
-      - /usr/local/pmon2/bin
-      - /usr/local/pmon2/service/centos6/
-      - /usr/local/pmon2/service/centos7/
-      - /usr/local/pmon2/auto-complete/bash/
-      - /usr/local/pmon2/logrotate/
-    files:
-      "auto-complete/bash/pmon2.sh": "/usr/local/pmon2/auto-complete/bash/pmon2.sh"
-      "service/centos6/*.conf": "/usr/local/pmon2/service/centos6/"
-      "service/centos7/pmon2.service": "/usr/local/pmon2/service/centos7/pmon2.service"
-      "logrotate/pmon2": "/usr/local/pmon2/logrotate/pmon2"
-    config_files:
-      "config/config.yml": "/etc/pmon2/config/config.yml"
+    contents:
+      - src: "auto-complete/bash/pmon2.sh"
+        dst: "/usr/local/pmon2/auto-complete/bash/pmon2.sh"
+        file_info:
+          mode: 644
+      - src: "service/centos6/*.conf"
+        dst: "/usr/local/pmon2/service/centos6/"
+        file_info:
+          mode: 644
+      - src: "service/centos7/pmon2.service"
+        dst: "/usr/local/pmon2/service/centos7/pmon2.service"
+      - src: "logrotate/pmon2"
+        dst: "/usr/local/pmon2/logrotate/pmon2"
+      - src: "config/config.yml"
+        dst: "/etc/pmon2/config/config.yml"
+        type: config
+      -
+       src: "/usr/local/pmon2/bin/pmon2"
+       dst: "/usr/bin/pmon2"
+       type: symlink
     scripts:
-#      执行不同的安装文件
+    #      执行不同的安装文件
       postinstall: "auto-complete/scripts/centos6_install.sh"
       postremove: "auto-complete/scripts/uninstall.sh"
+
+
 
