@@ -15,6 +15,11 @@ var Cmd = &cobra.Command{
 	Aliases: []string{"show"},
 	Short:   "print the process detail message",
 	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) == 0 {
+			app.Log.Fatalf("The command need process name or id, Example: sudo pmon2 show test")
+			return
+		}
+
 		cmdRun(args)
 	},
 }
